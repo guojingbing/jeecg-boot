@@ -146,7 +146,7 @@
   export default {
     name: 'OnlCgformTreeList',
     components: {
-      JImportModal,
+      JImportModal
     },
     data() {
       return {
@@ -691,7 +691,6 @@
           }
         });
       },
-
     }
   }
 </script>

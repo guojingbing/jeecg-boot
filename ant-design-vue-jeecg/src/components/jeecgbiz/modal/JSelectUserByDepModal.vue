@@ -76,11 +76,6 @@
             dataIndex: 'realname'
           },
           {
-            title: '角色名称',
-            align: 'center',
-            dataIndex: 'roleName'
-          },
-          {
             title: '性别',
             align: 'center',
             dataIndex: 'sex',
@@ -157,8 +152,9 @@
         console.log("props userIds: ", this.userIds)
         if (this.userIds) {
           let currUserIds = this.userIds
+          let userIdsArr = currUserIds.split(',');
           for (let item of this.dataSource) {
-            if (currUserIds.indexOf(item.username) >= 0) {
+            if (userIdsArr.includes(item.username)) {
               names += "," + item.realname
             }
           }
@@ -166,6 +162,9 @@
             names = names.substring(1)
           }
           this.$emit("initComp", names)
+        }else{
+          // JSelectUserByDep组件bug issues/I16634
+          this.$emit("initComp", "")
         }
       },
       async loadData(arg) {

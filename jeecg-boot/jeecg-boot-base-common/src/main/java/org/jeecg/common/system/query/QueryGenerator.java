@@ -17,11 +17,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jeecg.common.constant.CommonConstant;
+import org.jeecg.common.constant.DataBaseConstant;
+import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.util.JeecgDataAutorUtils;
 import org.jeecg.common.system.util.JwtUtil;
+import org.jeecg.common.system.vo.SysPermissionDataRuleModel;
 import org.jeecg.common.util.SqlInjectionUtil;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.system.entity.SysPermissionDataRule;
+import org.jeecgframework.core.util.ApplicationContextUtil;
 import org.springframework.util.NumberUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -31,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class QueryGenerator {
-	
 	public static final String SQL_RULES_COLUMN = "SQL_RULES_COLUMN";
 
 	private static final String BEGIN = "_begin";
@@ -94,7 +96,7 @@ public class QueryGenerator {
 		
 		//区间条件组装 模糊查询 高级查询组装 简单排序 权限查询
 		PropertyDescriptor origDescriptors[] = PropertyUtils.getPropertyDescriptors(searchObj);
-		Map<String,SysPermissionDataRule> ruleMap = getRuleMap();
+		Map<String,SysPermissionDataRuleModel> ruleMap = getRuleMap();
 		
 		//权限规则自定义SQL表达式
 		for (String c : ruleMap.keySet()) {
@@ -315,7 +317,7 @@ public class QueryGenerator {
 	}
 	
 	private static void addQueryByRule(QueryWrapper<?> queryWrapper,String name,String type,String value,QueryRuleEnum rule) throws ParseException {
-		if(!"".equals(value)) {
+		if(oConvertUtils.isNotEmpty(value)) {
 			Object temp;
 			switch (type) {
 			case "class java.lang.Integer":
@@ -380,7 +382,7 @@ public class QueryGenerator {
 	 * @param value        查询条件值
 	 */
 	private static void addEasyQuery(QueryWrapper<?> queryWrapper, String name, QueryRuleEnum rule, Object value) {
-		if (value == null || rule == null) {
+		if (value == null || rule == null || oConvertUtils.isEmpty(value)) {
 			return;
 		}
 		name = oConvertUtils.camelToUnderline(name);
@@ -444,14 +446,14 @@ public class QueryGenerator {
 	 * 
 	 * @return
 	 */
-	public static Map<String, SysPermissionDataRule> getRuleMap() {
-		Map<String, SysPermissionDataRule> ruleMap = new HashMap<String, SysPermissionDataRule>();
-		List<SysPermissionDataRule> list =JeecgDataAutorUtils.loadDataSearchConditon();
+	public static Map<String, SysPermissionDataRuleModel> getRuleMap() {
+		Map<String, SysPermissionDataRuleModel> ruleMap = new HashMap<String, SysPermissionDataRuleModel>();
+		List<SysPermissionDataRuleModel> list =JeecgDataAutorUtils.loadDataSearchConditon();
 		if(list != null&&list.size()>0){
 			if(list.get(0)==null){
 				return ruleMap;
 			}
-			for (SysPermissionDataRule rule : list) {
+			for (SysPermissionDataRuleModel rule : list) {
 				String column = rule.getRuleColumn();
 				if(QueryRuleEnum.SQL_RULES.getValue().equals(rule.getRuleConditions())) {
 					column = SQL_RULES_COLUMN+rule.getId();
@@ -462,7 +464,7 @@ public class QueryGenerator {
 		return ruleMap;
 	}
 	
-	private static void addRuleToQueryWrapper(SysPermissionDataRule dataRule,String name, Class propertyType, QueryWrapper<?> queryWrapper) {
+	private static void addRuleToQueryWrapper(SysPermissionDataRuleModel dataRule, String name, Class propertyType, QueryWrapper<?> queryWrapper) {
 		QueryRuleEnum rule = QueryRuleEnum.getByValue(dataRule.getRuleConditions());
 		if(rule.equals(QueryRuleEnum.IN) && ! propertyType.equals(String.class)) {
 			String[] values = dataRule.getRuleValue().split(",");
@@ -590,7 +592,11 @@ public class QueryGenerator {
 			str = str.substring(1);
 		}
 		if(isString) {
-			return " '"+str+"' ";
+			if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+				return " N'"+str+"' ";
+			}else{
+				return " '"+str+"' ";
+			}
 		}else {
 			return value.toString();
 		}
@@ -601,7 +607,11 @@ public class QueryGenerator {
 			String temp[] = value.toString().split(",");
 			String res="";
 			for (String string : temp) {
-				res+=",'"+string+"'";
+				if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+					res+=",N'"+string+"'";
+				}else{
+					res+=",'"+string+"'";
+				}
 			}
 			return "("+res.substring(1)+")";
 		}else {
@@ -612,16 +622,36 @@ public class QueryGenerator {
 	private static String getLikeConditionValue(Object value) {
 		String str = value.toString().trim();
 		if(str.startsWith("*") && str.endsWith("*")) {
-			return "'%"+str.substring(1,str.length()-1)+"%'";
+			if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+				return "N'%"+str.substring(1,str.length()-1)+"%'";
+			}else{
+				return "'%"+str.substring(1,str.length()-1)+"%'";
+			}
 		}else if(str.startsWith("*")) {
-			return "'%"+str.substring(1)+"'";
+			if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+				return "N'%"+str.substring(1)+"'";
+			}else{
+				return "'%"+str.substring(1)+"'";
+			}
 		}else if(str.endsWith("*")) {
-			return "'"+str.substring(0,str.length()-1)+"%'";
+			if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+				return "N'"+str.substring(0,str.length()-1)+"%'";
+			}else{
+				return "'"+str.substring(0,str.length()-1)+"%'";
+			}
 		}else {
 			if(str.indexOf("%")>=0) {
-				return str;
+				if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+					return "N"+str;
+				}else{
+					return str;
+				}
 			}else {
-				return "'%"+str+"%'";
+				if(DataBaseConstant.DB_TYPE_SQLSERVER.equals(getDbType())){
+					return "N'%"+str+"%'";
+				}else{
+					return "'%"+str+"%'";
+				}
 			}
 		}
 	}
@@ -636,7 +666,7 @@ public class QueryGenerator {
 	public static String installAuthJdbc(Class<?> clazz) {
 		StringBuffer sb = new StringBuffer();
 		//权限查询
-		Map<String,SysPermissionDataRule> ruleMap = getRuleMap();
+		Map<String,SysPermissionDataRuleModel> ruleMap = getRuleMap();
 		PropertyDescriptor origDescriptors[] = PropertyUtils.getPropertyDescriptors(clazz);
 		String sql_and = " and ";
 		for (String c : ruleMap.keySet()) {
@@ -651,7 +681,7 @@ public class QueryGenerator {
 				continue;
 			}
 			if(ruleMap.containsKey(name)) {
-				SysPermissionDataRule dataRule = ruleMap.get(name);
+				SysPermissionDataRuleModel dataRule = ruleMap.get(name);
 				QueryRuleEnum rule = QueryRuleEnum.getByValue(dataRule.getRuleConditions());
 				Class propType = origDescriptors[i].getPropertyType();
 				boolean isString = propType.equals(String.class);
@@ -677,7 +707,7 @@ public class QueryGenerator {
 	 */
 	public static void installAuthMplus(QueryWrapper<?> queryWrapper,Class<?> clazz) {
 		//权限查询
-		Map<String,SysPermissionDataRule> ruleMap = getRuleMap();
+		Map<String,SysPermissionDataRuleModel> ruleMap = getRuleMap();
 		PropertyDescriptor origDescriptors[] = PropertyUtils.getPropertyDescriptors(clazz);
 		for (String c : ruleMap.keySet()) {
 			if(oConvertUtils.isNotEmpty(c) && c.startsWith(SQL_RULES_COLUMN)){
@@ -694,6 +724,26 @@ public class QueryGenerator {
 				addRuleToQueryWrapper(ruleMap.get(name), name, origDescriptors[i].getPropertyType(), queryWrapper);
 			}
 		}
+	}
+
+
+	/** 当前系统数据库类型 */
+	private static String DB_TYPE;
+	/**
+	 * 获取系统数据库类型
+	 */
+	private static String getDbType(){
+		if(oConvertUtils.isNotEmpty(DB_TYPE)){
+			return DB_TYPE;
+		}
+		try {
+			ISysBaseAPI sysBaseAPI = ApplicationContextUtil.getContext().getBean(ISysBaseAPI.class);
+			DB_TYPE = sysBaseAPI.getDatabaseType();
+			return DB_TYPE;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return DB_TYPE;
 	}
 	
 }

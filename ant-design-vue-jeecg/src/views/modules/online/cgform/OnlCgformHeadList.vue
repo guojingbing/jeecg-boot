@@ -183,7 +183,7 @@
     name: 'OnlCgformHeadList',
     mixins: [JeecgListMixin],
     components: {
-      JDictSelectTag
+      JDictSelectTag,
     },
     data() {
       return {
