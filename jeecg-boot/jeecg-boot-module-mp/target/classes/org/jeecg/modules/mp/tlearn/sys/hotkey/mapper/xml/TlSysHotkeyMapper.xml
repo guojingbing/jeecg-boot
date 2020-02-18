@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.sys.hotkey.mapper.TlSysHotkeyMapper">
+    <select id="loadHotkeys" resultType="org.jeecg.modules.mp.tlearn.sys.hotkey.entity.TlSysHotkey">
+		SELECT *
+		FROM  tl_sys_hotkey
+		ORDER BY search_num DESC LIMIT 10
+		</select>
+
+    <select id="findHotkeyByKey" resultType="org.jeecg.modules.mp.tlearn.sys.hotkey.entity.TlSysHotkey">
+		SELECT *
+		FROM  tl_sys_hotkey
+		WHERE
+			 hot_key = #{key} AND key_cat=#{cat}</select>
+</mapper>

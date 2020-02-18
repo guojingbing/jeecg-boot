@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.sys.banner.mapper.TlBannerItemMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  tl_banner_item 
+		WHERE
+			 banner_id = #{mainId} 	</delete>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.sys.banner.entity.TlBannerItem">
+		SELECT * 
+		FROM  tl_banner_item
+		WHERE
+			 banner_id = #{mainId} 	</select>
+
+	<select id="loadBannerItemsByCode" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.sys.banner.entity.TlBannerItem">
+		SELECT a.*
+		FROM  tl_banner_item a
+		LEFT JOIN tl_banner b ON a.banner_id=b.id
+		WHERE
+			b.is_use=true
+			AND
+			b.loc_code = #{code} </select>
+</mapper>

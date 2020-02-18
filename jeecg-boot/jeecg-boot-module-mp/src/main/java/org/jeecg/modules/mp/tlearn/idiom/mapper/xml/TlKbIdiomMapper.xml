@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.idiom.mapper.TlKbIdiomMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT *
+        FROM tl_kb_idiom
+        WHERE 1=1
+        <if test="searchKey!=null and searchKey!=''">
+            AND title like '%${searchKey}%'
+        </if>
+    </select>
+</mapper>

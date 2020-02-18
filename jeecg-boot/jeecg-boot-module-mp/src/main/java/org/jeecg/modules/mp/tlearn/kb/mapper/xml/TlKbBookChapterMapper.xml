@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.kb.mapper.TlKbBookChapterMapper">
+    <select id="listBookChapters" resultType="org.jeecg.modules.mp.tlearn.kb.entity.TlKbBookChapter">
+        SELECT
+        *
+        FROM
+        tl_kb_book_chapter
+        WHERE 1=1
+        <if test="bookId!=null and bookId!=''">
+            AND book_id=#{bookId}
+        </if>
+	</select>
+    <select id="selectBookChapterByOrderNum" resultType="org.jeecg.modules.mp.tlearn.kb.entity.TlKbBookChapter">
+        SELECT
+        *
+        FROM
+        tl_kb_book_chapter
+        WHERE 1=1
+        <if test="bookId!=null and bookId!=''">
+            AND book_id=#{bookId}
+        </if>
+        <if test="level!=null and level!=''">
+            AND level=#{level}
+        </if>
+        <if test="orderNum!=null and orderNum!=''">
+            AND order_num=#{orderNum}
+        </if>
+    </select>
+</mapper>

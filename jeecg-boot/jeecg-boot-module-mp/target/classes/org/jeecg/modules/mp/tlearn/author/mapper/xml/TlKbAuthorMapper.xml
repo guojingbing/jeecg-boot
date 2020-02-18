@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.author.mapper.TlKbAuthorMapper">
+    <insert id="batchInsert">
+        INSERT INTO tl_kb_author(
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        sys_org_code,
+        author_name,
+        dyn_id,
+        summary,
+        avatar
+        )
+        VALUES
+        <foreach collection ="list" item="item" separator =",">
+            (#{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime}, #{item.sysOrgCode}, #{item.authorName}, #{item.dynId}, #{item.summary}, #{item.avatar})
+        </foreach >
+    </insert>
+</mapper>

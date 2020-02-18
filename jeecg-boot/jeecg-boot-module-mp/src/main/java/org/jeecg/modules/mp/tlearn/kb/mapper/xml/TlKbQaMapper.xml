@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.kb.mapper.TlKbQaMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        <if test="shareId!=null and shareId!=''">
+            (SELECT
+            a.id,
+            a.title,
+            a.content,
+            a.answer,
+            ifnull( a.thumbs_num, 0 ) thumbs_num,
+            ifnull( a.share_num, 0 ) share_num,
+            ifnull( a.collection_num, 0 ) collection_num,
+            a.qa_type,
+            ifnull(b.id,'') thumbs_id,
+            ifnull(c.id,'') collection_id
+            FROM
+            tl_kb_qa a
+            LEFT JOIN ( SELECT * FROM tl_kb_qa_thumbs WHERE user_id = #{openid}) b ON a.id = b.qa_id
+            LEFT JOIN ( SELECT * FROM tl_user_sub_qa WHERE user_id = #{openid}) c ON a.id = c.qa_id
+            WHERE
+            a.id = #{shareId})
+            UNION ALL(
+        </if>
+        SELECT
+        a.id,
+        a.title,
+        a.content,
+        a.answer,
+        ifnull( a.thumbs_num, 0 ) thumbs_num,
+        ifnull( a.share_num, 0 ) share_num,
+        ifnull( a.collection_num, 0 ) collection_num,
+        a.qa_type,
+        ifnull(b.id,'') thumbs_id,
+        ifnull(c.id,'') collection_id
+        FROM
+        tl_kb_qa a
+        LEFT JOIN ( SELECT * FROM tl_kb_qa_thumbs WHERE user_id = #{openid}) b ON a.id = b.qa_id
+        LEFT JOIN ( SELECT * FROM tl_user_sub_qa WHERE user_id = #{openid}) c ON a.id = c.qa_id
+        WHERE 1=1
+        <if test="shareId!=null and shareId!=''">
+            AND a.id != #{shareId}
+        </if>
+        <if test="type!=null">
+            AND qa_type=#{type}
+        </if>
+        <if test="searchKey!=null and searchKey!=''">
+            AND (a.content like '%${searchKey}%' or a.answer like '%${searchKey}%')
+        </if>
+        ORDER BY
+        rand()
+        <if test="shareId!=null and shareId!=''">
+            )
+        </if>
+    </select>
+    <select id="selectTypeQas" resultType="org.jeecg.modules.mp.tlearn.kb.entity.TlKbQa">
+        SELECT
+        *
+        FROM
+        tl_kb_qa
+        WHERE 1=1
+        <if test="type!=null and type!=''">
+            AND qa_type=#{type}
+        </if>
+    </select>
+</mapper>

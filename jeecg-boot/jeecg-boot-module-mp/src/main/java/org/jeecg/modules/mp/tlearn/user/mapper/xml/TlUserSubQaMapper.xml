@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.user.mapper.TlUserSubQaMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  tl_user_sub_qa
+		WHERE
+			 user_id = #{mainId} 	</delete>
+	
+	<select id="selectByQaId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.user.entity.TlUserSubQa">
+		SELECT * 
+		FROM  tl_user_sub_qa
+		WHERE
+			 qa_id = #{qaId} 	</select>
+
+	<select id="selectUserQaById" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.user.entity.TlUserSubQa">
+		SELECT *
+		FROM  tl_user_sub_qa
+		WHERE
+			 qa_id=#{qaId} and user_id=#{openid} 	</select>
+</mapper>

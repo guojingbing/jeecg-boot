@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.joke.mapper.TlKbJokeThumbsMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  tl_kb_joke_thumbs 
+		WHERE
+			 joke_id = #{mainId} 	</delete>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.joke.entity.TlKbJokeThumbs">
+		SELECT * 
+		FROM  tl_kb_joke_thumbs
+		WHERE
+			 joke_id = #{mainId} 	</select>
+
+	<select id="selectJokeThumbsByOpenid" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.tlearn.joke.entity.TlKbJokeThumbs">
+		SELECT *
+		FROM  tl_kb_joke_thumbs
+		WHERE
+			 joke_id = #{mainId} and user_id=#{openid} 	</select>
+</mapper>

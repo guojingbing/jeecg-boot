@@ -42,6 +42,7 @@ public class CommonController {
 
 	@Value(value = "${jeecg.path.upload}")
 	private String uploadpath;
+	protected static String X_ACCESS_TOKEN = "X-Access-Token";
 
 	/**
 	 * @Author 政辉

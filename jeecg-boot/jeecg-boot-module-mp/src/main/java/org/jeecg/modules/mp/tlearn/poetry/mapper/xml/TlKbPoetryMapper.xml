@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.poetry.mapper.TlKbPoetryMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT
+        a.id,
+        a.source_key,
+        a.title,
+        a.content,
+        a.content_orig,
+        a.tag_str,
+        a.form_id,
+        a.author_id,
+        a.audio_path,
+        a.rank,
+        a.rank_baidu,
+        a.rank_google,
+        a.rank_bing,
+        a.rank_sou360,
+        b.author_name author,
+        b.dyn_id,
+        b.avatar
+        FROM
+        tl_kb_poetry a
+        LEFT JOIN tl_kb_author b ON a.author_id = b.id
+        WHERE 1=1
+        <if test="dynId!=null and dynId!=''">
+            AND b.dyn_id=#{dynId}
+        </if>
+        <if test="poeFormId!=null and poeFormId!=''">
+            AND a.form_id=#{poeFormId}
+        </if>
+        <if test="key!=null and key!=''">
+            AND (a.title like '%${key}%' or a.content_orig like '%${key}%' or a.search_key like '%${key}%')
+        </if>
+        <if test="tagStr!=null and tagStr!=''">
+            AND ifnull(a.tag_str,'') like '%${tagStr}%'
+        </if>
+        <if test="bookId!=null and bookId!=''">
+            AND a.id IN(select item_value from sys_dict_item WHERE dict_id=#{bookId})
+        </if>
+        <if test="bookId==null || bookId==''">
+            ORDER BY
+            tag_str IS NOT NULL
+            AND tag_str != '' DESC,
+            rank DESC
+        </if>
+	</select>
+
+    <select id="listPoetryNoRank" resultType="org.jeecg.modules.mp.tlearn.poetry.entity.TlKbPoetry">
+        SELECT a.* FROM tl_kb_poetry a left join tl_kb_author b on a.author_id=b.id
+        WHERE 1=1
+        <if test="rank!=null and rank!='' and rank=='BAIDU'">
+            AND rank_baidu is null
+        </if>
+        <if test="rank!=null and rank!='' and rank=='BING'">
+            AND rank_bing is null
+        </if>
+        <if test="rank!=null and rank!='' and rank=='GOOGLE'">
+            AND rank_google is null
+        </if>
+        <if test="rank!=null and rank!='' and rank=='SOU360'">
+            AND rank_sou360 is null
+        </if>
+        ORDER BY b.rec_index desc
+    </select>
+</mapper>
