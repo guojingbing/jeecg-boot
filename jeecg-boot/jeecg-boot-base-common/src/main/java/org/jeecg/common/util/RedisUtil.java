@@ -1,16 +1,16 @@
 package org.jeecg.common.util;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import org.jeecg.common.exception.JeecgBootException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis 工具类
@@ -130,6 +130,23 @@ public class RedisUtil {
 				set(key, value);
 			}
 			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * 并发控制设置
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public Boolean multiSetIfAbsent(String key, Object value) {
+		try {
+			Map map=new HashMap();
+			map.put(key,value);
+			return redisTemplate.opsForValue().multiSetIfAbsent(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

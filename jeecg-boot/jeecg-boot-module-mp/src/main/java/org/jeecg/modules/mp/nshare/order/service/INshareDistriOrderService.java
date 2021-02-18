@@ -1,5 +1,6 @@
 package org.jeecg.modules.mp.nshare.order.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrder;
 import org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrderGoods;
@@ -7,6 +8,7 @@ import org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrderGoods;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 社区分享配送订单
@@ -37,5 +39,8 @@ public interface INshareDistriOrderService extends IService<NshareDistriOrder> {
 	 * 批量删除一对多
 	 */
 	public void delBatchMain(Collection<? extends Serializable> idList);
-	
+
+	IPage<Map> loadList4API(int pageSize, int pageNo, String shopId, String userId, String teamId, String status, String searchKey);
+
+	List<NshareDistriOrder> selectOrderByDate(String date);
 }

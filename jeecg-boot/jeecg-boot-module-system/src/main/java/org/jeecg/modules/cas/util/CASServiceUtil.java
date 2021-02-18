@@ -1,14 +1,5 @@
 package org.jeecg.modules.cas.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
@@ -16,17 +7,45 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class CASServiceUtil {
 	
 	public static void main(String[] args) {
-		String serviceUrl = "https://cas.8f8.com.cn:8443/cas/p3/serviceValidate";
-		String service = "http://localhost:3003/user/login";
-		String ticket = "ST-5-1g-9cNES6KXNRwq-GuRET103sm0-DESKTOP-VKLS8B3";
-		String res = getSTValidate(serviceUrl,ticket, service);
-		
-		System.out.println("---------res-----"+res);
+//		String serviceUrl = "https://cas.8f8.com.cn:8443/cas/p3/serviceValidate";
+//		String service = "http://localhost:3003/user/login";
+//		String ticket = "ST-5-1g-9cNES6KXNRwq-GuRET103sm0-DESKTOP-VKLS8B3";
+//		String res = getSTValidate(serviceUrl,ticket, service);
+//
+//		System.out.println("---------res-----"+res);
+		System.out.println(getPickTime());
 	}
-	
+
+
+    public static Date getPickTime(){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+        Calendar cld = Calendar.getInstance(Locale.CHINA);
+        cld.setFirstDayOfWeek(Calendar.MONDAY);//以周一为首日
+        cld.setTimeInMillis(System.currentTimeMillis());//当前时间
+
+        cld.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);//周三
+        if(cld.getTime().getTime()>System.currentTimeMillis()){
+            return cld.getTime();
+        }
+
+        cld.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);//周六
+        return cld.getTime();
+    }
 	
 	/**
      * 验证ST

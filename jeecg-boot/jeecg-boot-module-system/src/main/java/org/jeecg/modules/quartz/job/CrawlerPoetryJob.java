@@ -896,6 +896,24 @@ public class CrawlerPoetryJob implements Job {
         }
     }
 
+    @Test
+    public void initContentOrig(){
+        List<TlKbPoetry>  poes=tlKbPoetryService.list();
+        for(int i=0;i<poes.size();i++){
+            TlKbPoetry p=poes.get(i);
+            if(p.getContentOrig()!=null){
+                continue;
+            }
+            System.out.println(poes.size()+":"+i);
+            String contentOrig = p.getContent().replaceAll("<span.*?</span>", "")
+                    .replaceAll("\\(.*?\\)", "")
+                    .replaceAll("（.*?）", "");
+//                    .replaceAll("<br.*?>", "");
+            p.setContentOrig(contentOrig);
+            tlKbPoetryService.saveOrUpdate(p);
+        }
+    }
+
     public static void main(String args[]) {
 //        System.out.println(String.format("数据爬取定时任务，开始时间:" + DateUtils.getTimestamp()));
 //        //获取代理服务器信息

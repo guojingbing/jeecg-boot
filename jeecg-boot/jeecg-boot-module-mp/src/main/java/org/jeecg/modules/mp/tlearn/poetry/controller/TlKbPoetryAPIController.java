@@ -5,7 +5,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
-import org.jeecg.modules.mp.tlearn.poetry.entity.TlKbPoetry;
 import org.jeecg.modules.mp.tlearn.poetry.entity.TlKbPoetryComment;
 import org.jeecg.modules.mp.tlearn.poetry.service.ITlKbPoetryCommentService;
 import org.jeecg.modules.mp.tlearn.poetry.service.ITlKbPoetryService;
@@ -84,11 +83,8 @@ public class TlKbPoetryAPIController {
     @ApiOperation(value = "根据id获取古诗词信息", notes = "根据id获取古诗词信息")
     @GetMapping(value = "/article/{id}")
     public Result<?> queryById(@PathVariable(name = "id") String id) {
-        TlKbPoetry tlKbPoetry = tlKbPoetryService.getById(id);
-        if (tlKbPoetry == null) {
-            return Result.error("未找到对应数据");
-        }
-        return Result.ok(tlKbPoetry);
+        Map poe=tlKbPoetryService.loadPoetryInfo(id);
+        return Result.ok(poe);
 
     }
 

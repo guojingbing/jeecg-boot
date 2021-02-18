@@ -64,4 +64,26 @@
         </if>
         ORDER BY b.rec_index desc
     </select>
+
+    <select id="loadTlPoetry" resultType="java.util.HashMap">
+        SELECT
+            a.id,
+            a.title,
+            a.content_orig,
+            a.content,
+            b.author_name,
+            b.avatar,
+            b.summary
+        FROM
+            tl_kb_poetry a
+            LEFT JOIN tl_kb_author b ON a.author_id = b.id
+        WHERE a.id=#{id}
+    </select>
+
+    <select id="loadTlKb" resultType="java.util.HashMap">
+        SELECT video_src,audio_src,img_src
+        FROM tl_kb
+        WHERE kb_type=1
+        AND kb_id=#{kbId}
+    </select>
 </mapper>

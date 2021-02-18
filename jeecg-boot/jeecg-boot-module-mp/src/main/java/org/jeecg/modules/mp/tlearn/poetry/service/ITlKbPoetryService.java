@@ -71,4 +71,11 @@ public interface ITlKbPoetryService extends IService<TlKbPoetry> {
 	 * 删除重复数据
 	 */
 	void delPoetrysRepeat();
+
+	/**
+	 * 获取诗词知识库信息
+	 * @param poeId
+	 * @return
+	 */
+	Map loadPoetryInfo(String poeId);
 }

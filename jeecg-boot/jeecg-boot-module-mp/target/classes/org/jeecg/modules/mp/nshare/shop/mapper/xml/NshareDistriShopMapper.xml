@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.mp.nshare.shop.mapper.NshareDistriShopMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT
+        a.*,
+        ( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop' AND attach_code = 'LOGO' AND buss_id = a.id ) imgs
 
+        <if test="lng!=null">
+        ,(st_distance (point (a.lng,a.lat),point (#{lng},#{lat}))*111195) dist
+        </if>
+
+        FROM
+        nshare_distri_shop a
+        WHERE
+        ifnull(shop_status,0)=1
+        <if test="searchKey!=null and searchKey!=''">
+        AND
+            ifnull(a.shop_name,'') like '%${searchKey}%'
+        </if>
+        ORDER BY
+        <if test="lng!=null">
+            dist asc,
+        </if>
+        a.order_num ASC
+    </select>
+
+    <select id="selectByOwnerId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShop">
+		SELECT *
+		FROM  nshare_distri_shop
+		WHERE
+			 owner_id = #{ownerId} 	</select>
 </mapper>

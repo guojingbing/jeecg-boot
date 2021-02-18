@@ -26,4 +26,8 @@ public interface TlKbPoetryMapper extends BaseMapper<TlKbPoetry> {
     void delPoetrysRepeat(String inCase);
 
     List<TlKbPoetry> listPoetryNoRank(@Param("rank") String rank);
+
+    Map loadTlPoetry(@Param("id") String id);
+
+    Map loadTlKb(@Param("kbId") String kbId);
 }

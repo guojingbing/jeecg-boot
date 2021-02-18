@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.mp.nshare.order.mapper.NshareDistriOrderMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT
+        a.id,
+        a.shop_id shopId,
+        a.order_no orderNo,
+        a.order_date orderDate,
+        a.order_amount orderAmount,
+        a.station_id stationId,
+        a.pick_user pickUser,
+        a.pick_phone pickPhone,
+        a.pick_code pickCode,
+        ifnull( a.order_status, '0' ) orderStatus,
+        a.confirm_time confirmTime,
+        a.pick_time pickTime,
+        a.remark,
+        b.shop_name shopName,
+        ( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop' AND attach_code = 'LOGO' AND buss_id = b.id ) imgs,
+        c.team_name stationName,
+        c.address stationAddr,
+        CONCAT( CONCAT('images/qrcode/', DATE_FORMAT(pick_time,'%Y-%m-%d')), CONCAT('/',CONCAT(a.pick_code,'.png' ))) qrcode,
+        u.user_name userName,
+        u.real_name realName,
+        u.avatar_url avatarUrl
+        FROM
+        nshare_distri_order a
+        LEFT JOIN nshare_distri_shop b ON a.shop_id = b.id
+        LEFT JOIN nshare_user_team c ON a.station_id = c.id
+        LEFT JOIN nshare_user u ON a.create_by = u.id
+        WHERE
+        1 =1
+        <if test="shopId!=null and shopId!=''">
+            AND a.shop_id=#{shopId}
+        </if>
 
+        <if test="userId!=null and userId!=''">
+            AND a.create_by=#{userId}
+        </if>
+
+        <if test="teamId!=null and teamId!=''">
+            AND a.station_id=#{teamId}
+        </if>
+
+        <if test="status!=null and status!=''">
+            AND ifnull(a.order_status,'0')=#{status}
+        </if>
+
+        <if test="searchKey!=null and searchKey!=''">
+            AND pick_code like '%${searchKey}%'
+        </if>
+        ORDER BY a.create_time
+        DESC
+    </select>
+
+    <select id="selectOrderByDate" resultType="org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrder">
+        SELECT
+        *
+        FROM nshare_distri_order
+        WHERE DATE_FORMAT(pick_time,'%Y-%m-%d')=#{pickDate}
+    </select>
 </mapper>

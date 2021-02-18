@@ -90,16 +90,17 @@ public class Test {
                     e.printStackTrace();
                 }
 
-//                TestXunFei.Callback callback=new TestXunFei.Callback() {
-//                    @Override
-//                    public void complete(String id, String errCode) {
-//                        System.out.println("complete");
-//                    }
-//                };
-//                TestXunFei t = new TestXunFei(args);
-//                t.callback = callback;
-//                threadPool.execute(t);
+                TestXunFei.Callback callback=new TestXunFei.Callback() {
+                    @Override
+                    public void complete(String id, String errCode) {
+                        System.out.println("complete");
+                    }
+                };
+                TestXunFei t = new TestXunFei(args);
+                t.callback = callback;
+                threadPool.execute(t);
             }
         }
     }
+
 }

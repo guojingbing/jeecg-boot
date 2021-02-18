@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.signin.mapper.TlSigninMapper">
+    <select id="selectAllTlSignin" resultType="java.util.HashMap">
+        SELECT
+            a.id,
+            a.title,
+            a.content,
+            a.start_time,
+            a.end_time,
+            a.url,
+            tmp.user_num
+        FROM
+            tl_signin a
+            LEFT JOIN ( SELECT signin_id, COUNT( DISTINCT ( user_id ) ) user_num FROM tl_signin_term GROUP BY signin_id ) tmp ON a.id = tmp.signin_id
+        WHERE <![CDATA[ start_time<=now() ]]> AND <![CDATA[ now( ) <= end_time
+        ]]>
+    </select>
+    <select id="selectSigninUsers" resultType="java.util.HashMap">
+        SELECT
+        *
+        FROM
+        tl_signin_term
+        WHERE
+        sign_id=#{id}
+    </select>
+    <select id="selectSigninMine" resultType="java.util.HashMap">
+        SELECT
+            id,
+            signin_id,
+            user_id,
+            DATEDIFF( end_date, start_date )+1 days,
+            ifnull(seconds,0) seconds
+        FROM
+            tl_signin_term a
+        WHERE
+            signin_id = #{id}
+            AND user_id = #{uid}
+        ORDER BY
+            DATEDIFF( end_date, start_date ) DESC
+    </select>
+    <select id="selectSigninCurTerm" resultType="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            tl_signin_term
+        WHERE
+            (DATE( end_date ) = DATE( NOW( ) )
+            OR DATE( end_date ) = DATE( DATE_ADD( NOW( ), INTERVAL '-1' DAY ) ))
+            AND signin_id=#{signinId} AND user_id=#{userId}
+    </select>
+    <select id="loadPagerRankingList" resultType="java.util.HashMap">
+        SELECT
+            u.nick_name,
+            u.user_name,
+            u.avatar_url,
+            tmp.*
+        FROM
+            (
+            SELECT
+                signin_id,
+                user_id,
+                MAX( DATEDIFF( end_date, start_date )+1 ) days,
+                sum( ifnull( seconds, 0 ) ) seconds
+            FROM
+                tl_signin_term
+            WHERE
+                signin_id = #{signinId}
+            GROUP BY
+                signin_id,
+                user_id
+            ) tmp
+            LEFT JOIN tl_user u ON tmp.user_id = u.id
+        WHERE
+            1=1
+            <if test="userId!=null and userId!=''">
+                AND tmp.user_id=#{userId}
+            </if>
+        ORDER BY
+            tmp.days DESC,
+            tmp.seconds DESC
+    </select>
+</mapper>

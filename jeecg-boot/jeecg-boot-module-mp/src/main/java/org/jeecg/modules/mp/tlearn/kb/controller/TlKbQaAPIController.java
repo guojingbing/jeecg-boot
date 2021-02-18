@@ -52,13 +52,14 @@ public class TlKbQaAPIController extends CommonController {
                                        @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
                                        @RequestParam(name="shareId", required = false) String shareId,
                                        @RequestParam(name = "searchKey", required = false) String searchKey,
+                                       @RequestParam(name = "isColl", required = false) String isColl,
                                        HttpServletRequest req) {
         String openid=null;
         String token = req.getHeader(X_ACCESS_TOKEN);
         if(!StringUtils.isEmpty(token)){
             openid = JwtUtil.getUsername(token);
         }
-        IPage<Map> pageList = tlKbQaService.loadList4API(pageSize, pageIndex, type, openid, searchKey, shareId);
+        IPage<Map> pageList = tlKbQaService.loadList4API(pageSize, pageIndex, type, openid, searchKey, shareId, isColl);
         return Result.ok(pageList);
     }
 

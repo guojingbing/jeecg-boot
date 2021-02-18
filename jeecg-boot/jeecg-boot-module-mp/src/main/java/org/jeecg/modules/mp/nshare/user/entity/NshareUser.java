@@ -59,6 +59,9 @@ public class NshareUser implements Serializable {
 	/**性别*/
 	@Excel(name = "性别", width = 15)
     private Integer gender;
+	/**区域*/
+	@Excel(name = "区域", width = 15)
+	private String district;
 	/**城市*/
 	@Excel(name = "城市", width = 15)
     private String city;
@@ -77,7 +80,16 @@ public class NshareUser implements Serializable {
 	/**unionid*/
 	@Excel(name = "unionid", width = 15)
     private String unionid;
+	/**用户编码*/
+	@Excel(name = "用户编码", width = 15)
+	private String userCode;
 	/**是否使用*/
 	@Excel(name = "是否使用", width = 15)
     private Integer isUse;
+	@Excel(name = "外接用户编号", width = 15)
+	private String fkUserId;
+	@Excel(name = "appid", width = 15)
+	private String appid;
+	@Excel(name = "视频呼叫号", width = 32)
+	private String servNumber;
 }

@@ -40,6 +40,8 @@ public class TlUser implements Serializable {
     private String sysOrgCode;
 	/**昵称*/
     private String nickName;
+    /**姓名*/
+    private String userName;
 	/**性别*/
     private Integer gender;
 	/**城市*/

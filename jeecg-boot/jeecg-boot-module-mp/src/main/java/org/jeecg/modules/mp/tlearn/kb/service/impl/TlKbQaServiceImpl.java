@@ -24,9 +24,9 @@ public class TlKbQaServiceImpl extends ServiceImpl<TlKbQaMapper, TlKbQa> impleme
 	private TlKbQaMapper tlKbQaMapper;
 
 	@Override
-	public IPage<Map> loadList4API(int pageSize, int pageNo, String type, String openid, String searchKey, String shareId) {
+	public IPage<Map> loadList4API(int pageSize, int pageNo, String type, String openid, String searchKey, String shareId, String isColl) {
 		Page<Map> page = new Page<>(pageNo, pageSize);
-		return tlKbQaMapper.loadList4API(page,type,openid,searchKey,shareId);
+		return tlKbQaMapper.loadList4API(page,type,openid,searchKey,shareId,isColl);
 	}
 
 	@Override

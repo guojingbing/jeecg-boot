@@ -2,15 +2,81 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.mp.nshare.order.mapper.NshareDistriOrderGoodsMapper">
 
-	<delete id="deleteByMainId" parameterType="java.lang.String">
+    <delete id="deleteByMainId" parameterType="java.lang.String">
 		DELETE 
 		FROM  nshare_distri_order_goods 
 		WHERE
 			 order_id = #{mainId} 	</delete>
-	
-	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrderGoods">
+
+    <select id="selectByMainId" parameterType="java.lang.String"
+            resultType="org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrderGoods">
 		SELECT * 
 		FROM  nshare_distri_order_goods
 		WHERE
 			 order_id = #{mainId} 	</select>
+
+    <select id="selectByOrderId" parameterType="java.lang.String"
+            resultType="java.util.HashMap">
+		SELECT
+		a.id,
+		a.order_id orderId,
+		a.goods_id goodsId,
+		a.goods_name goodsName,
+		a.order_num orderNum,
+		a.sale_unit saleUnit,
+		a.sale_price salePrice,
+		a.norm_price normPrice,
+		( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = a.goods_id) imgs,
+		b.show_price showPrice
+		FROM  nshare_distri_order_goods a
+		LEFT JOIN nshare_distri_shop_goods b ON a.goods_id=b.id
+		WHERE
+			 a.order_id = #{mainId} 	</select>
+
+    <select id="loadSoldList4API" resultType="java.util.HashMap">
+        SELECT
+        tmp.*,
+        ta.goods_name,
+        ta.sale_price,
+        ta.norm_price,
+        ta.price_unit,
+        ta.imgs
+        FROM
+        (
+        SELECT
+        a.goods_id,
+        b.shop_id,
+        DATE_FORMAT( b.pick_time, '%Y-%m-%d' ) pick_time,
+        sum( a.order_num ) total_num
+        FROM
+        nshare_distri_order_goods a
+        LEFT JOIN nshare_distri_order b ON a.order_id = b.id
+        WHERE
+        b.order_status != '9'
+        AND b.order_status != '0'
+        GROUP BY
+        b.shop_id,
+        a.goods_id,
+        DATE_FORMAT( b.pick_time, '%Y-%m-%d' )
+        ) tmp
+        LEFT JOIN (
+        SELECT
+        tta.*,
+        ( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = tta.id ) imgs
+        FROM
+        nshare_distri_shop_goods tta
+        ) ta ON tmp.goods_id = ta.id
+        WHERE
+        1 = 1
+        <if test="shopId!=null and shopId!=''">
+            AND tmp.shop_id=#{shopId}
+        </if>
+        <if test="pickDate!=null and pickDate!=''">
+            AND tmp.pick_time=#{pickDate}
+        </if>
+
+        <if test="searchKey!=null and searchKey!=''">
+            AND goods_name like '%${searchKey}%'
+        </if>
+    </select>
 </mapper>

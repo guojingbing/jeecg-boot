@@ -41,7 +41,8 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{fixed:true,selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        
         @change="handleTableChange">
 
         <template slot="htmlSlot" slot-scope="text">
@@ -115,16 +116,6 @@
             }
           },
           {
-            title:'商品名称',
-            align:"center",
-            dataIndex: 'goodsName'
-          },
-          {
-            title:'商品描述',
-            align:"center",
-            dataIndex: 'goodsDesc'
-          },
-          {
             title:'店铺',
             align:"center",
             dataIndex: 'shopId',
@@ -137,23 +128,63 @@
             }
           },
           {
+            title:'商品名称',
+            align:"center",
+            dataIndex: 'goodsName'
+          },
+          {
+            title:'商品代码',
+            align:"center",
+            dataIndex: 'goodsCode'
+          },
+          {
+            title:'商品分类',
+            align:"center",
+            dataIndex: 'goodsCat'
+          },
+          {
+            title:'商品描述',
+            align:"center",
+            dataIndex: 'goodsDesc'
+          },
+          {
+            title:'标准价格',
+            align:"center",
+            dataIndex: 'normPrice'
+          },
+          {
+            title:'销售价格',
+            align:"center",
+            dataIndex: 'salePrice'
+          },
+          {
+            title:'单位',
+            align:"center",
+            dataIndex: 'priceUnit'
+          },
+          {
+            title:'是否上架',
+            align:"center",
+            dataIndex: 'onSaleString'
+          },
+          {
             title: '操作',
             dataIndex: 'action',
             align:"center",
-            scopedSlots: { customRender: 'action' },
+            scopedSlots: { customRender: 'action' }
           }
         ],
         url: {
-          list: "/nshare.goods/nshareDistriShopGoods/list",
-          delete: "/nshare.goods/nshareDistriShopGoods/delete",
-          deleteBatch: "/nshare.goods/nshareDistriShopGoods/deleteBatch",
-          exportXlsUrl: "/nshare.goods/nshareDistriShopGoods/exportXls",
-          importExcelUrl: "nshare.goods/nshareDistriShopGoods/importExcel",
+          list: "/goods/nshareDistriShopGoods/list",
+          delete: "/goods/nshareDistriShopGoods/delete",
+          deleteBatch: "/goods/nshareDistriShopGoods/deleteBatch",
+          exportXlsUrl: "/goods/nshareDistriShopGoods/exportXls",
+          importExcelUrl: "goods/nshareDistriShopGoods/importExcel",
         },
         dictOptions:{
          shopId:[],
+         onSale:[],
         },
-
       }
     },
     computed: {
@@ -166,6 +197,11 @@
         initDictOptions('nshare_distri_shop,shop_name,id').then((res) => {
           if (res.success) {
             this.$set(this.dictOptions, 'shopId', res.result)
+          }
+        })
+        initDictOptions('').then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'onSale', res.result)
           }
         })
       }

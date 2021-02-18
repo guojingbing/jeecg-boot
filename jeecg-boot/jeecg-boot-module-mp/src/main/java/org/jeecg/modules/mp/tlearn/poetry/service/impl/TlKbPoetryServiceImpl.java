@@ -14,6 +14,7 @@ import org.jeecg.modules.mp.tlearn.poetry.service.ITlKbPoetryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -130,5 +131,14 @@ public class TlKbPoetryServiceImpl extends ServiceImpl<TlKbPoetryMapper, TlKbPoe
 			sb.append(idList.get(i));
 		}
 		tlKbPoetryMapper.delPoetrysRepeat(sb.toString());
+	}
+	@Override
+	public Map loadPoetryInfo(String poeId){
+		Map poe=tlKbPoetryMapper.loadTlPoetry(poeId);
+		Map kb=tlKbPoetryMapper.loadTlKb(poeId);
+		if(poe!=null&&!CollectionUtils.isEmpty(poe)&&kb!=null&&!CollectionUtils.isEmpty(kb)){
+			poe.put("media",kb);
+		}
+		return poe;
 	}
 }

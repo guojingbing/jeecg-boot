@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.signin.mapper.TlSigninTermItemMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT
+        a.id,
+        a.learn_title,
+        a.kb_id,
+        UNIX_TIMESTAMP(a.start_time)*1000 start_time,
+        UNIX_TIMESTAMP(a.end_time)*1000 end_time,
+--         TIMESTAMPDIFF(SECOND,a.start_time,a.end_time) seconds,
+        a.src,
+        b.epigram,
+        DATEDIFF(b.start_date,b.end_date) days,
+        UNIX_TIMESTAMP(b.start_date) start_date,
+        UNIX_TIMESTAMP(b.end_date)*1000 end_date,
+        b.user_id,
+        b.signin_id,
+        c.kb_type,
+        u.openid,
+        u.unionid,
+        u.user_name,
+        u.nick_name,
+        u.avatar_url
+        FROM
+        tl_signin_term_item a
+        LEFT JOIN tl_signin_term b ON a.term_id = b.id
+        INNER JOIN tl_user u ON b.user_id=u.id
+        INNER JOIN tl_kb c ON a.kb_id=c.id
+        WHERE 1=1
+        <if test="signinId!=null and signinId!=''">
+            AND b.signin_id=#{signinId}
+        </if>
+        <if test="uid!=null and uid!=''">
+            AND b.user_id=#{uid}
+        </if>
+        <if test="searchKey!=null and searchKey!=''">
+            AND (learn_title like '%${searchKey}%' or epigram like '%${searchKey}%' or epigram like '%${searchKey}%')
+        </if>
+        ORDER BY
+        start_time DESC
+    </select>
+
+    <select id="selectSigninTermItems" resultType="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            tl_signin_term_item
+        WHERE
+            term_id = #{termId}
+        ORDER BY
+            start_time DESC
+    </select>
+
+    <select id="selectSigninPoetries" resultType="java.util.HashMap">
+        SELECT
+            a.*
+        FROM
+            tl_kb a
+            LEFT JOIN tl_kb_poetry b ON a.kb_id = b.id
+        WHERE
+            a.kb_type =1
+    </select>
+
+    <select id="selectSigninKbs" resultType="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            tl_kb
+        WHERE
+            a.kb_type=#{type}
+    </select>
+
+    <select id="selectSigninTermItemById" resultType="java.util.HashMap">
+        SELECT
+            i.*,
+            a.title,
+            a.content kb_content,
+            a.video_src,
+            a.audio_src,
+            a.img_src,
+            a.kb_type,
+            b.content,
+            b.content_orig,
+            c.author_name,
+            c.avatar,
+            c.summary
+        FROM
+            tl_signin_term_item i
+            LEFT JOIN tl_kb a ON a.id = i.kb_id
+            LEFT JOIN tl_kb_poetry b ON a.kb_id = b.id
+            AND a.kb_type = 1
+            LEFT JOIN tl_kb_author c ON b.author_id = c.id
+        WHERE i.id=#{id}
+    </select>
+
+</mapper>

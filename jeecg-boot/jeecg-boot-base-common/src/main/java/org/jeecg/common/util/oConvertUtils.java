@@ -428,7 +428,7 @@ public class oConvertUtils {
 	 * 
 	 * @param name
 	 *            转换前的下划线大写方式命名的字符串
-	 * @return 转换后的驼峰式命名的字符串
+	 * @return 转换后的驼峰式命名的字符串r
 	 */
 	public static String camelName(String name) {
 		StringBuilder result = new StringBuilder();

@@ -13,6 +13,7 @@ import org.crazycake.shiro.RedisManager;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.shiro.authc.ShiroRealm;
 import org.jeecg.modules.shiro.authc.aop.JwtFilter;
+import org.jeecg.modules.shiro.authc.aop.APITokenFilter;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -129,11 +130,20 @@ public class ShiroConfig {
 
 		//小程序接口
 		filterChainDefinitionMap.put("/mp/api/**", "anon");
-		
+		filterChainDefinitionMap.put("/sys/common/mp/upload/**", "anon");
+
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
 		filterMap.put("jwt", new JwtFilter());
+
+		// 添加小程序登录过滤器并且取名为ojwt，用于过滤需要登录的小程序接口
+		filterMap.put("ojwt", new APITokenFilter());
 		shiroFilterFactoryBean.setFilters(filterMap);
+		filterChainDefinitionMap.put("/mp/api/ns/auth/**", "ojwt");
+		filterChainDefinitionMap.put("/mp/api/ns/s/auth/**", "ojwt");
+		filterChainDefinitionMap.put("/mp/api/ns/s/g/auth/**", "ojwt");
+		filterChainDefinitionMap.put("/sys/common/mp/upload/**", "ojwt");
+
 		// <!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边
 		filterChainDefinitionMap.put("/**", "jwt");
 

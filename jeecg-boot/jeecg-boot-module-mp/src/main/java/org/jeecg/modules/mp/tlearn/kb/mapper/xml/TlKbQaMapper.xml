@@ -47,8 +47,13 @@
         <if test="searchKey!=null and searchKey!=''">
             AND (a.content like '%${searchKey}%' or a.answer like '%${searchKey}%')
         </if>
+        <if test="isColl!=null and isColl!=''">
+            AND EXISTS (SELECT * FROM tl_user_sub_qa WHERE user_id=#{openid} AND qa_id=a.id)
+        </if>
+        <if test="isColl==null or isColl==''">
         ORDER BY
         rand()
+        </if>
         <if test="shareId!=null and shareId!=''">
             )
         </if>

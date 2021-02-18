@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * @Description: 社区分享配送店铺
  * @Author:
- * @Date:   2020-02-18
+ * @Date:   2020-03-05
  * @Version: V1.0
  */
 @Data
@@ -30,20 +30,43 @@ public class NshareDistriShop implements Serializable {
     private String shopName;
 	/**店铺描述*/
     private String shopDesc;
-	/**店铺地址*/
-    private String address;
 	/**店铺级别*/
     private String shopLevel;
-	/**图片路径*/
-    private String picPath;
 	/**店主*/
     private String ownerId;
-	/**店主电话*/
+    /**店主电话*/
     private String ownerPhone;
-	/**授权认证码*/
-    private String authCode;
-	/**创建人*/
-    private String createBy;
+	/**店铺状态*/
+    private Integer shopStatus;
+
+    /**店铺地址*/
+    private String address;
+    /**店铺地址补充*/
+    private String addrMore;
+    /**经度*/
+    private java.math.BigDecimal lng;
+    /**维度*/
+    private java.math.BigDecimal lat;
+    /**区域代码*/
+    private String adcode;
+    /**国家*/
+    private String nation;
+    /**省份*/
+    private String province;
+    /**城市*/
+    private String city;
+    /**区县*/
+    private String district;
+    /**营业开始时间*/
+    private String onTime;
+    /**营业结束时间*/
+    private String offTime;
+    /**是否营业*/
+    private Integer onDuty;
+    /**店铺分类*/
+    private String shopType;
+	/**排序*/
+    private Integer orderNum;
 	/**创建日期*/
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

@@ -16,6 +16,6 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface TlKbQaMapper extends BaseMapper<TlKbQa> {
-    IPage<Map> loadList4API(Page<Map> page, String type, String openid, String searchKey, String shareId);
+    IPage<Map> loadList4API(Page<Map> page, String type, String openid, String searchKey, String shareId,String isColl);
     List<TlKbQa> selectTypeQas(@Param("type") String type);
 }

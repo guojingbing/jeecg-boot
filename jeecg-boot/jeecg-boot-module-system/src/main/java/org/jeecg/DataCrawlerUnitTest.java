@@ -841,6 +841,62 @@ public class DataCrawlerUnitTest {
         return 0;
     }
 
+
+    /**
+     * 获取年级分册
+     * @return
+     */
+    @Test
+    public void loadGradeVolume(){
+        String url="https://www.zujuan.com/api/catalog/cate-tree";
+        try {
+            Map params=new HashMap();
+            params.put("xd",1);
+            params.put("chid",3);
+            params.put("chapter_id",23313);
+            Map headers=new HashMap();
+            headers.put("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0");
+            JSONObject json = CrawlerUtil.getForJSONObject(url, params, headers);
+            if (json == null) {
+                System.out.println("获取失败");
+                return;
+            }
+            if(json.getIntValue("status")!=0){
+                System.out.println(json.getString("msg"));
+                return;
+            }
+
+            JSONArray rslt = json.getJSONArray("result");
+            if (json == null) {
+                System.out.println("没有结果");
+                return;
+            }
+
+            List<NshareLottery> list=new ArrayList<>();
+            for(int j=0;j<rslt.size();j++){
+                JSONObject obj=rslt.getJSONObject(j);
+                String parentid=obj.getString("parentid");
+                String caipiaoid=obj.getString("caipiaoid");
+                String name=obj.getString("name");
+
+                if("0".equalsIgnoreCase(parentid)){
+                    continue;
+                }
+                NshareLottery entity=new NshareLottery();
+                entity.setCatId(parentid);
+                entity.setLotteryName(name);
+                entity.setLotteryId(caipiaoid);
+                list.add(entity);
+            }
+            if(!CollectionUtils.isEmpty(list)){
+                nshareLotteryService.saveOrUpdateBatch(list);
+                System.out.println(list.size()+"条彩票数据保存成功");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String args[]){
         System.out.println(System.currentTimeMillis()/1000);
     }

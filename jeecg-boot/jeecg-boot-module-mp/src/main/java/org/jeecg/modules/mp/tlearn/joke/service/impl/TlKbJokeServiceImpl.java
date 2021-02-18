@@ -79,9 +79,9 @@ public class TlKbJokeServiceImpl extends ServiceImpl<TlKbJokeMapper, TlKbJoke> i
 	}
 
 	@Override
-	public IPage<Map> loadList4API(int pageSize, int pageNo, String openid,String searchKey) {
+	public IPage<Map> loadList4API(int pageSize, int pageNo, String openid,String searchKey,String isColl) {
 		Page<Map> page = new Page<>(pageNo, pageSize);
-		return tlKbJokeMapper.loadList4API(page,openid,searchKey);
+		return tlKbJokeMapper.loadList4API(page,openid,searchKey,isColl);
 	}
 	
 }

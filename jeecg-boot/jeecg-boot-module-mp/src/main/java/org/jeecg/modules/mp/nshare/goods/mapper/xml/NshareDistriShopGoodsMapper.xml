@@ -1,5 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.jeecg.modules.demo.nshare.goods.mapper.NshareDistriShopGoodsMapper">
+<mapper namespace="org.jeecg.modules.mp.nshare.goods.mapper.NshareDistriShopGoodsMapper">
+    <select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.goods.entity.NshareDistriShopGoods">
+		SELECT *
+		FROM  nshare_distri_shop_goods
+		WHERE
+			 shop_id = #{mainId}
+        <if test="catId!=null and catId!=''">
+            AND
+            goods_cat = #{catId}
+        </if>
+	</select>
 
+	<select id="selectMapByMainId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT
+		a.id,
+		a.goods_code goodsCode,
+		a.goods_name goodsName,
+		a.goods_desc goodsDesc,
+		a.goods_cat goodsCat,
+		a.shop_id shopId,
+		a.norm_price normPrice,
+		a.goods_code goodsCode,
+		a.sale_price salePrice,
+		a.price_unit priceUnit,
+		a.on_sale onSale,
+		ifnull(a.show_price,0) showPrice,
+		ifnull(a.main_rec,0) mainRec,
+		a.sku_num skuNum,
+		( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = a.id ) imgs
+		FROM
+		nshare_distri_shop_goods a
+		WHERE
+		shop_id = #{mainId}
+		<if test="catId!=null and catId!=''">
+			AND
+			goods_cat = #{catId}
+		</if>
+		ORDER BY ifnull(a.main_rec,0) DESC, ifnull(a.on_sale,0) DESC
+	</select>
+
+	<select id="loadList4API" resultType="java.util.HashMap">
+		SELECT
+		a.id,
+		a.goods_code goodsCode,
+		a.goods_name goodsName,
+		a.goods_desc goodsDesc,
+		a.goods_cat goodsCat,
+		a.shop_id shopId,
+		a.norm_price normPrice,
+		a.goods_code goodsCode,
+		a.sale_price salePrice,
+		a.price_unit priceUnit,
+		ifnull( a.on_sale, 0 ) onSale,
+		ifnull( a.show_price, 0 ) showPrice,
+		ifnull( a.main_rec, 0 ) mainRec,
+		a.sku_num skuNum,
+		( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = a.id ) imgs,
+		b.sold_num soldNum
+		FROM
+		nshare_distri_shop_goods a
+		LEFT JOIN ( SELECT goods_id, sum( order_num ) sold_num FROM nshare_distri_order_goods GROUP BY goods_id ) b ON a.id = b.goods_id
+		LEFT JOIN sys_dict_item c ON a.goods_cat = c.item_value
+		AND c.dict_id = '1237026576479039490'
+		WHERE
+		1 = 1
+		AND c.status =1
+		<if test="shopId!=null and shopId!=''">
+			AND shop_id = #{shopId}
+		</if>
+		<if test="catId!=null and catId!=''">
+			AND goods_cat = #{catId}
+		</if>
+		<if test="teamId!=null and teamId!=''">
+			AND EXISTS(SELECT id FROM nshare_distri_shop_team WHERE team_id=#{teamId} AND shop_id=a.shop_id)
+		</if>
+		<if test="key!=null and key!=''">
+			AND a.goods_name like '%${key}%'
+		</if>
+		ORDER BY ifnull(a.main_rec,0) DESC, ifnull(a.on_sale,0) DESC
+	</select>
 </mapper>

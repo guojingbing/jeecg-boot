@@ -63,13 +63,14 @@ public class TlKbJokeAPIController extends CommonController {
     public Result<?> queryPageList(@PathVariable(name = "pageIndex") Integer pageIndex,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    @RequestParam(name = "searchKey", required = false) String searchKey,
+                                   @RequestParam(name = "isColl", required = false) String isColl,
                                    HttpServletRequest req) {
         String openid=null;
         String token = req.getHeader(X_ACCESS_TOKEN);
         if(!StringUtils.isEmpty(token)){
             openid = JwtUtil.getUsername(token);
         }
-        IPage<Map> pageList = tlKbJokeService.loadList4API(pageSize, pageIndex, !StringUtils.isEmpty(openid) ? openid : "", searchKey);
+        IPage<Map> pageList = tlKbJokeService.loadList4API(pageSize, pageIndex, !StringUtils.isEmpty(openid) ? openid : "", searchKey, isColl);
         return Result.ok(pageList);
     }
 

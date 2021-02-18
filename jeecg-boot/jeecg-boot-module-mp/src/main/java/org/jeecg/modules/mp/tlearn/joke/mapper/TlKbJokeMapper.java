@@ -14,5 +14,5 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface TlKbJokeMapper extends BaseMapper<TlKbJoke> {
-    IPage<Map> loadList4API(Page<Map> page, String openid,String searchKey);
+    IPage<Map> loadList4API(Page<Map> page, String openid,String searchKey,String isColl);
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.tlearn.kb.mapper.TlKbCourseVolumeMapper">
+    <select id="selectCourseVolume" resultType="org.jeecg.modules.mp.tlearn.kb.entity.TlKbCourseVolume">
+        SELECT
+        a.*
+        FROM
+        tl_kb_course_volume a
+        LEFT JOIN tl_kb_course_version b ON a.version_id = b.id
+        LEFT JOIN tl_kb_course c ON b.course_id=c.id
+        WHERE 1=1
+        <if test="cfk!=null">
+            AND c.fk_code = #{cfk}
+        </if>
+    </select>
+</mapper>

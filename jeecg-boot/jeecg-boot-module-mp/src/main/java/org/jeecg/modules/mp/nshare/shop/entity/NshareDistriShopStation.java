@@ -1,19 +1,20 @@
 package org.jeecg.modules.mp.nshare.shop.entity;
 
-import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
 import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @Description: 社区分享店铺配送点
  * @Author:
- * @Date:   2020-02-17
+ * @Date:   2020-03-05
  * @Version: V1.0
  */
 @Data
@@ -51,4 +52,10 @@ public class NshareDistriShopStation implements Serializable {
 	/**地址*/
 	@Excel(name = "地址", width = 15)
 	private String stationAddr;
+	/**经度*/
+	@Excel(name = "经度", width = 15)
+	private java.math.BigDecimal longitude;
+	/**维度*/
+	@Excel(name = "维度", width = 15)
+	private java.math.BigDecimal latitude;
 }

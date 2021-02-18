@@ -1,5 +1,7 @@
 package org.jeecg.modules.mp.nshare.order.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrder;
 import org.jeecg.modules.mp.nshare.order.entity.NshareDistriOrderGoods;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 社区分享配送订单
@@ -74,5 +77,15 @@ public class NshareDistriOrderServiceImpl extends ServiceImpl<NshareDistriOrderM
 			nshareDistriOrderMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public IPage<Map> loadList4API(int pageSize, int pageNo, String shopId, String userId, String teamId, String status, String searchKey) {
+		Page<Map> page = new Page<>(pageNo, pageSize);
+		return nshareDistriOrderMapper.loadList4API(page,shopId,userId,teamId,status,searchKey);
+	}
+
+	@Override
+	public List<NshareDistriOrder> selectOrderByDate(String pickDate){
+		return nshareDistriOrderMapper.selectOrderByDate(pickDate);
+	}
 }

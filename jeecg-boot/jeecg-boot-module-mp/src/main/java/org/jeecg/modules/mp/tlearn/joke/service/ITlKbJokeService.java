@@ -17,7 +17,7 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface ITlKbJokeService extends IService<TlKbJoke> {
-	IPage<Map> loadList4API(int pageSize, int pageNo, String openid,String searchKey);
+	IPage<Map> loadList4API(int pageSize, int pageNo, String openid,String searchKey,String isColl);
 	/**
 	 * 添加一对多
 	 * 

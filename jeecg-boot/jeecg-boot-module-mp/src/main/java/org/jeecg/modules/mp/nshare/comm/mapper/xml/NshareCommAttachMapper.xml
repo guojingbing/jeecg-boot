@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.nshare.comm.mapper.NshareCommAttachMapper">
+    <select id="selectByBuss" parameterType="java.lang.String"
+            resultType="org.jeecg.modules.mp.nshare.comm.entity.NshareCommAttach">
+        SELECT *
+        FROM nshare_comm_attach
+        WHERE
+        1=1
+        <if test="bussTableName!=null and bussTableName!=''">
+            AND
+            buss_table_name = #{bussTableName}
+        </if>
+        <if test="bussId!=null and bussId!=''">
+            AND
+            buss_id = #{bussId}
+        </if>
+        <if test="attachCode!=null and attachCode!=''">
+            AND
+            attach_code=#{attachCode}
+        </if>
+    </select>
+    <delete id="deleteByBuss" parameterType="java.lang.String">
+		DELETE
+		FROM  nshare_comm_attach
+		WHERE
+        buss_table_name = #{bussTableName}
+        AND
+        buss_id = #{bussId}
+        AND
+        attach_code=#{attachCode}
+	</delete>
+</mapper>

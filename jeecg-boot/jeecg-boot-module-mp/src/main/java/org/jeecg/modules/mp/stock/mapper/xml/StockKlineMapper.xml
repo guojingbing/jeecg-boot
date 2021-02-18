@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.stock.mapper.StockKlineMapper">
+    <select id="selectByDateRange" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.stock.entity.StockKline">
+		SELECT *
+		FROM  stock_kline
+		WHERE 1=1
+		<if test="code!=null and code!=''">
+			AND
+			code=#{code}
+		</if>
+        <if test="startDate!=null and startDate!=''">
+			AND
+            date between #{startDate} and #{endDate}
+        </if>
+		<if test="frequency!=null and frequency!=''">
+			AND
+			frequency=#{frequency}
+		</if>
+	</select>
+
+	<select id="selectMapByDateRange" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT
+		a.code,
+		a.code_name codeName,
+		a.ipo_date ipoDate,
+		a.out_date out_date,
+		a.type,
+		a.stock_status stockStatus
+		FROM
+		stock_info a
+		WHERE 1=1
+		<if test="type!=null">
+			AND
+			a.type = #{type}
+		</if>
+	</select>
+
+	<select id="loadList4API" resultType="java.util.HashMap">
+		SELECT
+		a.code,
+		a.code_name codeName,
+		a.ipo_date ipoDate,
+		a.out_date out_date,
+		a.type,
+		a.stock_status stockStatus
+		FROM
+		stock_info a
+		WHERE
+		1 = 1
+		<if test="type!=null">
+			AND
+			a.type = #{type}
+		</if>
+		<if test="key!=null and key!=''">
+			AND (code like '%${key}%' OR code_name like '%${key}%')
+		</if>
+	</select>
+</mapper>

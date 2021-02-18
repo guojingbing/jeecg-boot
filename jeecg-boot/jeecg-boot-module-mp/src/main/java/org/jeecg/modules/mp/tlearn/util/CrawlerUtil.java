@@ -416,6 +416,10 @@ public class CrawlerUtil extends HttpUtil{
 
 
     public static JSONObject getForJSONObject(String url, Map<String, Object> params, Map<String, Object> headers) throws Exception {
+        if(headers==null){
+            headers=new HashMap();
+        }
+        headers.put("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0");
         HttpUtil.ResponseData resp = get(url, params, headers, 3000, 10000, 1000, null, null);
         if (resp.getCode() != 200) {
             return null;

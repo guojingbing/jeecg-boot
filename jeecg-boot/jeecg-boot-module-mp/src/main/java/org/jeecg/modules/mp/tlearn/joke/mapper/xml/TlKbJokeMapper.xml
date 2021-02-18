@@ -33,13 +33,18 @@
         tl_kb_joke a
         LEFT JOIN ( SELECT * FROM tl_kb_joke_thumbs WHERE user_id = #{openid}) b ON a.id = b.joke_id
         LEFT JOIN ( SELECT * FROM tl_user_sub_joke WHERE user_id = #{openid}) c ON a.id = c.joke_id
+        WHERE
+        1=1
 		<if test="searchKey!=null and searchKey!=''">
-			WHERE
-			a.id != #{searchKey}
+			AND a.id != #{searchKey}
 		</if>
-        ORDER BY
---         ifnull( thumbs_up, 0 ) DESC
-        rand()
+        <if test="isColl!=null and isColl!=''">
+            AND EXISTS (SELECT * FROM tl_user_sub_joke WHERE user_id=#{openid} AND a.id=joke_id)
+        </if>
+        <if test="isColl==null or isColl==''">
+            ORDER BY
+            rand()
+        </if>
 		<if test="searchKey!=null and searchKey!=''">
 			)
 		</if>

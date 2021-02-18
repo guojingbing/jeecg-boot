@@ -1,13 +1,14 @@
 package org.jeecg.modules.mp.nshare.order.entity;
 
-import java.io.Serializable;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description: 社区分享配送订单
@@ -62,7 +63,9 @@ public class NshareDistriOrder implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date confirmTime;
 	/**取货时间*/
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date pickTime;
+    /**订单备注*/
+    private String remark;
 }

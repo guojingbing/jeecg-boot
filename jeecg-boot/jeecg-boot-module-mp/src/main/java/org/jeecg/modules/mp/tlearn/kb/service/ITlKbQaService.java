@@ -14,6 +14,6 @@ import java.util.Map;
  * @Version: V1.0
  */
 public interface ITlKbQaService extends IService<TlKbQa> {
-	IPage<Map> loadList4API(int pageSize, int pageNo, String type, String openid, String searchKey, String shareId);
+	IPage<Map> loadList4API(int pageSize, int pageNo, String type, String openid, String searchKey, String shareId, String isColl);
 	List<TlKbQa> listQaByType(String type);
 }

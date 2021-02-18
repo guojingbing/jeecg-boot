@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.stock.mapper.StockInfoMapper">
+    <select id="selectByType" parameterType="java.lang.Integer" resultType="org.jeecg.modules.mp.stock.entity.StockInfo">
+		SELECT *
+		FROM  stock_info
+		WHERE 1=1 AND stock_status=1
+        <if test="type!=null">
+			AND
+            type = #{type}
+        </if>
+	</select>
+
+	<select id="selectMapByType" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+		SELECT
+		a.code,
+		a.code_name codeName,
+		a.ipo_date ipoDate,
+		a.out_date out_date,
+		a.type,
+		a.stock_status stockStatus
+		FROM
+		stock_info a
+		WHERE 1=1
+		<if test="type!=null">
+			AND
+			a.type = #{type}
+		</if>
+	</select>
+
+	<select id="loadList4API" resultType="java.util.HashMap">
+		SELECT
+		a.code,
+		a.code_name codeName,
+		a.ipo_date ipoDate,
+		a.out_date out_date,
+		a.type,
+		a.stock_status stockStatus
+		FROM
+		stock_info a
+		WHERE
+		1 = 1
+		<if test="type!=null">
+			AND
+			a.type = #{type}
+		</if>
+		<if test="key!=null and key!=''">
+			AND (code like '%${key}%' OR code_name like '%${key}%')
+		</if>
+	</select>
+
+	<select id="selectListNotExistsProfit" parameterType="java.lang.Integer" resultType="org.jeecg.modules.mp.stock.entity.StockInfo">
+		SELECT *
+		FROM  stock_info a
+		WHERE
+		type=1 AND stock_status=1
+		AND NOT EXISTS (SELECT id FROM stock_profit b WHERE b.code=a.code
+		<if test="year!=null">
+			AND
+			b.year = #{year}
+		</if>
+		<if test="quarter!=null">
+			AND
+			b.quarter = #{quarter}
+		</if>
+		)
+	</select>
+</mapper>

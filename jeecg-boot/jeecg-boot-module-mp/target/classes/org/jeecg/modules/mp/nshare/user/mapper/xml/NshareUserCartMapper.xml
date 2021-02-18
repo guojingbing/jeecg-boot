@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.nshare.user.mapper.NshareUserCartMapper">
+    <select id="loadList4API" resultType="java.util.HashMap">
+        SELECT
+        a.id,
+        a.goods_id goodsId,
+        a.station_id stationId,
+        a.user_id userId,
+        a.num,
+        a.add_price addPrice,
+        a.update_time updateTime,
+        b.goods_name goodsName,
+        b.sale_price salePrice,
+        b.norm_price normPrice,
+        b.price_unit priceUnit,
+        b.on_sale onSale,
+        c.team_name teamName,
+        ( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = a.goods_id ) imgs,
+        (ifnull( b.sku_num, 0 )-ifnull(tmp.order_num,0)) skuNum,
+        shop.id shopId,
+        shop.shop_name shopName
+        FROM
+        nshare_user_cart a
+        LEFT JOIN nshare_distri_shop_goods b ON a.goods_id = b.id
+        LEFT JOIN nshare_distri_shop shop ON b.shop_id=shop.id
+        LEFT JOIN nshare_user_team c ON a.station_id = c.id
+        LEFT JOIN (
+        SELECT
+        ta.goods_id,
+        sum( ta.order_num ) order_num
+        FROM
+        nshare_distri_order_goods ta
+        LEFT JOIN nshare_distri_order tb ON ta.order_id = tb.id
+        WHERE
+        tb.order_status != '2'
+        AND tb.order_status != '9'
+        GROUP BY
+        goods_id
+        ) tmp ON a.goods_id = tmp.goods_id
+        WHERE
+        1 =1
+        <if test="userId!=null and userId!=''">
+            AND a.user_id=#{userId}
+        </if>
+        <if test="stationId!=null and stationId!=''">
+            AND a.station_id=#{stationId}
+        </if>
+        <if test="goodsId!=null and goodsId!=''">
+            AND a.goods_id=#{goodsId}
+        </if>
+        ORDER BY
+        a.update_time DESC
+    </select>
+
+    <select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.user.entity.NshareUserCart">
+		SELECT *
+		FROM  nshare_user_cart
+        WHERE 1=1 AND user_id = #{userId}
+        <if test="stationId!=null and stationId!=''">
+            AND station_id=#{stationId}
+        </if>
+	</select>
+</mapper>

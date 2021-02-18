@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.nshare.shop.mapper.NshareDistriShopTeamMapper">
+
+    <delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  nshare_distri_shop_team
+		WHERE
+			 shop_id = #{mainId} 	</delete>
+
+    <select id="selectByMainId" parameterType="java.lang.String"
+            resultType="org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShopTeam">
+		SELECT * 
+		FROM  nshare_distri_shop_team
+		WHERE
+			 shop_id = #{mainId} 	</select>
+
+    <select id="selectMapByMainId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT
+			a.id,
+			a.shop_id shopId,
+			a.team_id teamId,
+			b.adcode,
+			b.address,
+			b.city,
+			b.district,
+			b.province,
+			b.latitude,
+			b.longitude,
+			b.team_name teamName,
+			b.user_id userId
+		FROM
+			nshare_distri_shop_team a
+			LEFT JOIN nshare_user_team b ON a.team_id = b.id
+			WHERE a.shop_id=#{mainId}
+	</select>
+</mapper>

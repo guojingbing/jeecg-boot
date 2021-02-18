@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.nshare.shop.mapper.NshareDistriShopPromotionMapper">
+	<select id="loadList4API" resultType="java.util.HashMap">
+		SELECT
+		a.id,
+		a.title,
+		a.pro_desc proDesc,
+		a.pro_type proType,
+		a.shop_id shopId,
+		a.start_time startTime,
+		a.end_time endTime,
+		a.create_time createTime,
+		a.create_by createBy,
+		a.audit_status auditStatus,
+		a.order_num orderNum,
+		a.sale_price salePrice,
+		a.norm_price normPrice,
+		a.start_time startTime,
+		a.end_time endTime,
+		a.goods_name goodsName,
+		a.price_unit priceUnit,
+		ifnull(a.total_num,0) totalNum,
+		ifnull(a.max_num,0) maxNum,
+		ifnull(a.min_num,0) minNum,
+		ifnull(a.limit_num,0) limitNum,
+		( SELECT GROUP_CONCAT( attach_path ) FROM nshare_comm_attach WHERE buss_table_name = 'nshare_distri_shop_goods' AND attach_code = 'LOGO' AND buss_id = a.goods_id ) imgs
+		FROM
+		nshare_distri_shop_promotion a
+		WHERE
+		1 =1
+		<if test="auditType!=null">
+			AND ifnull(audit_status,0)=#{auditType}
+		</if>
+		<if test="hisType!=null and hisType==1">
+			AND <![CDATA[ start_time>now() ]]>
+		</if>
+		<if test="hisType!=null and hisType==2">
+			AND <![CDATA[ start_time<=now() AND end_time>now() ]]>
+		</if>
+		<if test="hisType!=null and hisType==9">
+			AND <![CDATA[ end_time<=now() ]]>
+		</if>
+		<if test="shopId!=null and shopId!=''">
+			AND shop_id=#{shopId}
+		</if>
+		<if test="teamId!=null and teamId!=''">
+			AND EXISTS (SELECT shop_id FROM nshare_distri_shop_team WHERE shop_id=a.shop_id AND team_id=#{teamId})
+		</if>
+		<if test="searchKey!=null and searchKey!=''">
+			AND
+			ifnull(a.title,'') like '%${searchKey}%'
+		</if>
+		ORDER BY
+		a.order_num ASC,a.start_time ASC
+	</select>
+
+	<select id="selectByGoodsId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShopPromotion">
+		SELECT
+		  `id`,
+		  `title`,
+		  `pro_desc`,
+		  `pro_type`,
+		  `shop_id`,
+		  `start_time`,
+		  `pro_hours`,
+		  `end_time`,
+		  `goods_id`,
+		  `goods_name`,
+		  `norm_price`,
+		  `sale_price`,
+		  `price_unit`,
+		  ifnull(`total_num`,0) total_num,
+		  ifnull(`min_num`,0) min_num,
+		  ifnull(`max_num`,0) max_num,
+		  ifnull(`limit_num`,0) limit_num,
+		  `order_num`,
+		  `use_status`,
+		  `audit_status`,
+		  `create_time`,
+		  `create_by`,
+		  `update_time`,
+		  `update_by`
+		FROM
+		  nshare_distri_shop_promotion
+		WHERE goods_id = #{goodsId}
+		ORDER BY start_time DESC,audit_status DESC
+	</select>
+
+	<select id="selectByGoodsIdRange" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShopPromotion">
+		SELECT *
+		FROM  nshare_distri_shop_promotion
+		WHERE goods_id = #{goodsId}
+		AND <![CDATA[ end_time>=#{startTime} ]]>
+		AND <![CDATA[ start_time<=#{endTime} ]]>
+	</select>
+</mapper>

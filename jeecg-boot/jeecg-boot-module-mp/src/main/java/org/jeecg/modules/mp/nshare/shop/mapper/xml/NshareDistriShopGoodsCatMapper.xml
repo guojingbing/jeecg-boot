@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.nshare.shop.mapper.NshareDistriShopGoodsCatMapper">
+
+    <delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  nshare_distri_shop_goods_cat 
+		WHERE
+			 shop_id = #{mainId} 	</delete>
+
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShopGoodsCat">
+		SELECT
+		a.*
+		FROM
+			nshare_distri_shop_goods_cat a
+			LEFT JOIN sys_dict_item b ON a.cat_id=b.item_value AND b.dict_id='1237026576479039490'
+		WHERE
+			shop_id=#{mainId}
+			AND b.status=1
+		ORDER BY
+		order_num ASC
+	</select>
+
+    <select id="selectMapToAdd" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT
+		b.id,
+		a.item_value catId,
+		a.item_text catName,
+		ifnull( b.order_num, '0' ) orderNum,
+		#{mainId} shopId
+		FROM
+			sys_dict_item a
+			LEFT JOIN nshare_distri_shop_goods_cat b ON a.item_value = b.cat_id
+			AND b.shop_id = #{mainId}
+		WHERE
+			a.dict_id = '1237026576479039490'
+			AND a.status=1
+		ORDER BY
+		CASE
+			WHEN ifnull( b.order_num, '0' ) = '0' THEN
+			0 ELSE 1
+		END DESC,
+		b.order_num ASC
+	</select>
+
+    <select id="selectMapByMainId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT a.cat_id catId,a.order_num orderNum,b.item_text catName
+		FROM  nshare_distri_shop_goods_cat a
+		LEFT JOIN sys_dict_item b ON a.cat_id=b.item_value AND b.dict_id='1237026576479039490'
+		WHERE
+			 shop_id = #{mainId}
+			AND b.status=1
+		ORDER BY a.order_num
+	</select>
+</mapper>

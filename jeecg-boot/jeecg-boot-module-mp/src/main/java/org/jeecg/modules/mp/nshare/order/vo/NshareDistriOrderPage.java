@@ -75,12 +75,14 @@ public class NshareDistriOrderPage {
     @DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date confirmTime;
 	/**取货时间*/
-	@Excel(name = "取货时间", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "取货时间", width = 15, format = "yyyy-MM-dd HH:mm")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
 	private Date pickTime;
+	/**订单备注*/
+	private String remark;
 	
 	@ExcelCollection(name="社区分享配送订单商品")
-	private List<NshareDistriOrderGoods> nshareDistriOrderGoodsList;
+	private List<NshareDistriOrderGoods> goodsList;
 	
 }

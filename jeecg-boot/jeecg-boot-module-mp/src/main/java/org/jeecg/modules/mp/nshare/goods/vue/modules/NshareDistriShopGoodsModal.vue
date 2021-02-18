@@ -1,195 +1,160 @@
 <template>
   <a-modal
     :title="title"
-    :width="1200"
+    :width="width"
     :visible="visible"
-    :maskClosable="false"
     :confirmLoading="confirmLoading"
     @ok="handleOk"
-    @cancel="handleCancel">
+    @cancel="handleCancel"
+    cancelText="关闭">
     <a-spin :spinning="confirmLoading">
-      <!-- 主表单区域 -->
       <a-form :form="form">
-        <a-row>
 
-          <a-col :span="12">
-            <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="[ 'goodsName', validatorRules.goodsName]" placeholder="请输入商品名称"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="商品描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input v-decorator="[ 'goodsDesc', validatorRules.goodsDesc]" placeholder="请输入商品描述"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="店铺" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag type="radio" v-decorator="['shopId']" :trigger-change="true" dictCode="nshare_distri_shop,shop_name,id" placeholder="请选择店铺"/>
-            </a-form-item>
-          </a-col>
+        <a-form-item label="店铺" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="radio" v-decorator="['shopId', validatorRules.shopId]" :trigger-change="true" dictCode="nshare_distri_shop,shop_name,id" placeholder="请选择店铺"/>
+        </a-form-item>
+        <a-form-item label="商品名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'goodsName', validatorRules.goodsName]" placeholder="请输入商品名称"></a-input>
+        </a-form-item>
+        <a-form-item label="商品代码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'goodsCode', validatorRules.goodsCode]" placeholder="请输入商品代码"></a-input>
+        </a-form-item>
+        <a-form-item label="商品分类" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'goodsCat', validatorRules.goodsCat]" placeholder="请输入商品分类"></a-input>
+        </a-form-item>
+        <a-form-item label="商品描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'goodsDesc', validatorRules.goodsDesc]" placeholder="请输入商品描述"></a-input>
+        </a-form-item>
+        <a-form-item label="标准价格" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'normPrice', validatorRules.normPrice]" placeholder="请输入标准价格" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="销售价格" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input-number v-decorator="[ 'salePrice', validatorRules.salePrice]" placeholder="请输入销售价格" style="width: 100%"/>
+        </a-form-item>
+        <a-form-item label="单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="[ 'priceUnit', validatorRules.priceUnit]" placeholder="请输入单位"></a-input>
+        </a-form-item>
+        <a-form-item label="是否上架" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="radio" v-decorator="['onSale', validatorRules.onSale]" :trigger-change="true" dictCode="" placeholder="请选择是否上架"/>
+        </a-form-item>
 
-        </a-row>
       </a-form>
-
-      <!-- 子表单区域 -->
-      <a-tabs v-model="activeKey" @change="handleChangeTabs">
-        <a-tab-pane tab="社区分享店铺配送商品每日信息" :key="refKeys[0]" :forceRender="true">
-          <j-editable-table
-            :ref="refKeys[0]"
-            :loading="nshareDistriShopGoodsDailyTable.loading"
-            :columns="nshareDistriShopGoodsDailyTable.columns"
-            :dataSource="nshareDistriShopGoodsDailyTable.dataSource"
-            :maxHeight="300"
-            :rowNumber="true"
-            :rowSelection="true"
-            :actionButton="true"/>
-        </a-tab-pane>
-        
-      </a-tabs>
-
     </a-spin>
   </a-modal>
 </template>
 
 <script>
 
+  import { httpAction } from '@/api/manage'
   import pick from 'lodash.pick'
-  import { FormTypes,getRefPromise } from '@/utils/JEditableTableUtil'
-  import { JEditableTableMixin } from '@/mixins/JEditableTableMixin'
+  import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
 
   export default {
-    name: 'NshareDistriShopGoodsModal',
-    mixins: [JEditableTableMixin],
-    components: {
+    name: "NshareDistriShopGoodsModal",
+    components: { 
       JDictSelectTag,
     },
-    data() {
+    data () {
       return {
+        form: this.$form.createForm(this),
+        title:"操作",
+        width:800,
+        visible: false,
+        model: {},
         labelCol: {
-          span: 6
+          xs: { span: 24 },
+          sm: { span: 5 },
         },
         wrapperCol: {
-          span: 16
+          xs: { span: 24 },
+          sm: { span: 16 },
         },
-        labelCol2: {
-          span: 3
-        },
-        wrapperCol2: {
-          span: 20
-        },
-        // 新增时子表默认添加几行空数据
-        addDefaultRowNum: 1,
+        confirmLoading: false,
         validatorRules: {
-          goodsName:{},
-          goodsDesc:{},
-          shopId:{},
-        },
-        refKeys: ['nshareDistriShopGoodsDaily', ],
-        tableKeys:['nshareDistriShopGoodsDaily', ],
-        activeKey: 'nshareDistriShopGoodsDaily',
-        // 社区分享店铺配送商品每日信息
-        nshareDistriShopGoodsDailyTable: {
-          loading: false,
-          dataSource: [],
-          columns: [
-            {
-              title: '商品',
-              key: 'goodsId',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-            {
-              title: '标准价格',
-              key: 'normPrice',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-            {
-              title: '销售价格',
-              key: 'salePrice',
-              type: FormTypes.input,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-            {
-              title: '单位',
-              key: 'priceUnit',
-              type: FormTypes.select,
-              dictCode:"mp_ns_goods_unit",
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-            {
-              title: '是否上架',
-              key: 'onSale',
-              type: FormTypes.select,
-              dictCode:"mp_ns_goods_onsale",
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-            {
-              title: '销售日期',
-              key: 'saleDate',
-              type: FormTypes.date,
-              width:"200px",
-              placeholder: '请输入${title}',
-              defaultValue: '',
-            },
-          ]
+          shopId: {rules: [
+          ]},
+          goodsName: {rules: [
+          ]},
+          goodsCode: {rules: [
+          ]},
+          goodsCat: {rules: [
+          ]},
+          goodsDesc: {rules: [
+          ]},
+          normPrice: {rules: [
+          ]},
+          salePrice: {rules: [
+          ]},
+          priceUnit: {rules: [
+          ]},
+          onSale: {rules: [
+          ]},
         },
         url: {
-          add: "/nshare.goods/nshareDistriShopGoods/add",
-          edit: "/nshare.goods/nshareDistriShopGoods/edit",
-          nshareDistriShopGoodsDaily: {
-            list: '/nshare.goods/nshareDistriShopGoods/queryNshareDistriShopGoodsDailyByMainId'
-          },
+          add: "/goods/nshareDistriShopGoods/add",
+          edit: "/goods/nshareDistriShopGoods/edit",
         }
       }
     },
+    created () {
+    },
     methods: {
-      getAllTable() {
-        let values = this.tableKeys.map(key => getRefPromise(this, key))
-        return Promise.all(values)
+      add () {
+        this.edit({});
       },
-      /** 调用完edit()方法之后会自动调用此方法 */
-      editAfter() {
-        let fieldval = pick(this.model,'goodsName','goodsDesc','shopId')
+      edit (record) {
+        this.form.resetFields();
+        this.model = Object.assign({}, record);
+        this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(fieldval)
+          this.form.setFieldsValue(pick(this.model,'shopId','goodsName','goodsCode','goodsCat','goodsDesc','normPrice','salePrice','priceUnit','onSaleString'))
         })
-        // 加载子表数据
-        if (this.model.id) {
-          let params = { id: this.model.id }
-          this.requestSubTableData(this.url.nshareDistriShopGoodsDaily.list, params, this.nshareDistriShopGoodsDailyTable)
-        }
       },
-      /** 整理成formData */
-      classifyIntoFormData(allValues) {
-        let main = Object.assign(this.model, allValues.formValue)
+      close () {
+        this.$emit('close');
+        this.visible = false;
+      },
+      handleOk () {
+        const that = this;
+        // 触发表单验证
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            that.confirmLoading = true;
+            let httpurl = '';
+            let method = '';
+            if(!this.model.id){
+              httpurl+=this.url.add;
+              method = 'post';
+            }else{
+              httpurl+=this.url.edit;
+               method = 'put';
+            }
+            let formData = Object.assign(this.model, values);
+            console.log("表单提交数据",formData)
+            httpAction(httpurl,formData,method).then((res)=>{
+              if(res.success){
+                that.$message.success(res.message);
+                that.$emit('ok');
+              }else{
+                that.$message.warning(res.message);
+              }
+            }).finally(() => {
+              that.confirmLoading = false;
+              that.close();
+            })
+          }
+         
+        })
+      },
+      handleCancel () {
+        this.close()
+      },
+      popupCallback(row){
+        this.form.setFieldsValue(pick(row,'shopId','goodsName','goodsCode','goodsCat','goodsDesc','normPrice','salePrice','priceUnit','onSaleString'))
+      },
 
-        return {
-          ...main, // 展开
-          nshareDistriShopGoodsDailyList: allValues.tablesValue[0].values,
-        }
-      },
-      validateError(msg){
-        this.$message.error(msg)
-      },
-     popupCallback(row){
-       this.form.setFieldsValue(pick(row,'goodsName','goodsDesc','shopId'))
-     },
-
+      
     }
   }
 </script>
-
-<style scoped>
-</style>
