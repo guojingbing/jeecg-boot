@@ -53,12 +53,20 @@ public class NshareUser implements Serializable {
 	/**手机号*/
 	@Excel(name = "手机号", width = 15)
     private String phone;
+	@Excel(name = "身份证号", width = 20)
+	private String idNumber;
+	@Excel(name = "出生日期", width = 16, format = "yyyy-MM-dd")
+	private String birthDate;
 	/**用户类型*/
 	@Excel(name = "用户类型", width = 15)
     private Integer userType;
 	/**性别*/
 	@Excel(name = "性别", width = 15)
     private Integer gender;
+	@Excel(name = "身高", width = 15)
+	private Double height;
+	@Excel(name = "体重", width = 15)
+	private Double weight;
 	/**区域*/
 	@Excel(name = "区域", width = 15)
 	private String district;
@@ -71,6 +79,8 @@ public class NshareUser implements Serializable {
 	/**国家*/
 	@Excel(name = "国家", width = 15)
     private String country;
+	@Excel(name = "详细地址", width = 64)
+	private String address;
 	/**头像地址*/
 	@Excel(name = "头像地址", width = 15)
     private String avatarUrl;
@@ -90,6 +100,11 @@ public class NshareUser implements Serializable {
 	private String fkUserId;
 	@Excel(name = "appid", width = 15)
 	private String appid;
-	@Excel(name = "视频呼叫号", width = 32)
+	@Excel(name = "生活服务视频呼叫号", width = 32)
 	private String servNumber;
+	@Excel(name = "健康服务视频呼叫号", width = 32)
+	private String jkServNumber;
+	/**绑定状态*/
+	@Excel(name = "绑定状态", width = 10)
+	private Short bindStatus;
 }

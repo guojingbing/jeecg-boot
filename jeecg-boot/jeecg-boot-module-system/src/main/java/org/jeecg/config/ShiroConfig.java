@@ -142,6 +142,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/mp/api/ns/auth/**", "ojwt");
 		filterChainDefinitionMap.put("/mp/api/ns/s/auth/**", "ojwt");
 		filterChainDefinitionMap.put("/mp/api/ns/s/g/auth/**", "ojwt");
+		filterChainDefinitionMap.put("/mp/api/ns/s/h/**", "ojwt");
 		filterChainDefinitionMap.put("/sys/common/mp/upload/**", "ojwt");
 
 		// <!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边

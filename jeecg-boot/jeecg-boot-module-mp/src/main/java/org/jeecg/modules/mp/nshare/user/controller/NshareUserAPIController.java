@@ -15,6 +15,11 @@ import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.system.controller.CommonController;
 import org.jeecg.common.system.util.JwtUtil;
 import org.jeecg.common.util.RedisUtil;
+import org.jeecg.modules.mp.common.constant.MpConfig;
+import org.jeecg.modules.mp.common.service.ICommonUtilHandler;
+import org.jeecg.modules.mp.healthy.station.service.IHealthyStationUserService;
+import org.jeecg.modules.mp.healthy.user.entity.HealthyUserSetting;
+import org.jeecg.modules.mp.healthy.user.service.IHealthyUserSettingService;
 import org.jeecg.modules.mp.nshare.shop.entity.NshareDistriShopAdmin;
 import org.jeecg.modules.mp.nshare.shop.service.INshareDistriShopAdminService;
 import org.jeecg.modules.mp.nshare.user.entity.NshareUser;
@@ -55,29 +60,14 @@ public class NshareUserAPIController extends CommonController {
     private INshareUserTeamService nshareUserTeamService;
     @Autowired
     private INshareUserCartService nshareUserCartService;
+    @Autowired
+    private IHealthyUserSettingService usSer;
+    @Autowired
+    private IHealthyStationUserService suSer;
+    @Autowired
+    private ICommonUtilHandler cuHandler;
 
-    private static final Map<String, Map<String, String>> appAuth = new HashMap<>();
-
-    static {
-        Map<String, String> config = new HashMap();
-        config.put("MP-SECRET", "a07fe08b99b99242a822ba83e65d0db4");
-//        config.put("TRTC-SDKAPPID","1400474322");
-//        config.put("TRTC-SECRET","739991025da854e1c67ca2bf1809a564c324926b22dfc1cdac2d7726622a5ea2");
-        //近邻
-        appAuth.put("wx5879c81e4cfc8ef5", config);
-        config = new HashMap();
-        config.put("MP-SECRET", "756a7872834755e493adb2a481a045c6");
-//        config.put("TRTC-SDKAPPID","1400474322");
-//        config.put("TRTC-SECRET","739991025da854e1c67ca2bf1809a564c324926b22dfc1cdac2d7726622a5ea2");
-        //多多
-        appAuth.put("wx035e90552bbb21fb", config);
-        //多多锦医未
-        config = new HashMap();
-        config.put("MP-SECRET", "f1369440e6c36daf2d1758dd731192d0");
-        config.put("TRTC-SDKAPPID", "1400474322");
-        config.put("TRTC-SECRET", "739991025da854e1c67ca2bf1809a564c324926b22dfc1cdac2d7726622a5ea2");
-        appAuth.put("wx004c4e41ee5ca5f8", config);
-    }
+    private Map<String, Map<String, String>> appAuth=MpConfig.appAuth;
 
     @ApiOperation(value = "获取微信用户敏感信息", notes = "获取微信用户敏感信息")
     @PostMapping(value = "/sendata")
@@ -124,6 +114,7 @@ public class NshareUserAPIController extends CommonController {
             //获取会话密钥（session_key）
             String session_key = json.get("session_key").toString();
             map.put("sessionKey", session_key);
+            appAuth.get(wxspAppid).put("SESSION_KEY",session_key);
             //用户的唯一标识（openid）
             String openid = (String) json.get("openid");
             //查询是否存在已绑定的账号
@@ -133,9 +124,11 @@ public class NshareUserAPIController extends CommonController {
                 String token = JwtUtil.sign(user.getId(), user.getId());
                 // 设置token缓存有效时间
                 redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-                redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME * 2 / 1000);
+                redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
                 map.put("userInfo", user);
+                map.put("userExpire",System.currentTimeMillis()+JwtUtil.EXPIRE_TIME/3);//登录有效时间
                 map.put("token", token);
+                map.put("tokenExpire",System.currentTimeMillis()+JwtUtil.EXPIRE_TIME);//token有效时间
                 //验证是否是店铺管理人
                 NshareDistriShopAdmin shopUser = shopAdminService.getOne(new LambdaQueryWrapper<NshareDistriShopAdmin>().eq(NshareDistriShopAdmin::getUserId, user.getId()));
                 map.put("shopUser", shopUser);
@@ -160,6 +153,7 @@ public class NshareUserAPIController extends CommonController {
                     user.setUnionid(userInfoJSON.getString("unionId"));
                     user.setAppid(wxspAppid);
                     user.setIsUse(1);
+                    user.setBindStatus((short)0);
                     nshareUserService.save(user);
                     user = nshareUserService.getOne(new LambdaQueryWrapper<NshareUser>().eq(NshareUser::getOpenid, openid).eq(NshareUser::getAppid, wxspAppid));
                     if (StringUtils.isEmpty(user.getPhone())) {
@@ -173,7 +167,6 @@ public class NshareUserAPIController extends CommonController {
                     //不返回手机号
                     user.setPhone(null);
                     map.put("userInfo", user);
-
                     // 生成token
                     String token = JwtUtil.sign(user.getId(), user.getId());
                     // 设置token缓存有效时间
@@ -197,6 +190,117 @@ public class NshareUserAPIController extends CommonController {
 //            log.error("doGetSensitiveData请求处理失败>>>>>>"+e.getMessage(),e);
         }
         return Result.error("解密失败");
+    }
+
+    @ApiOperation(value = "获取微信用户敏感信息", notes = "获取微信用户敏感信息")
+    @PostMapping(value = "/info")
+    public Result<?> doGetUserInfo(@RequestBody String jsonStr) {
+        Map map = new HashMap();
+        //登录凭证不能为空
+        if (jsonStr == null || jsonStr.length() == 0) {
+            return Result.error("body请求参数获取失败");
+        }
+        JSONObject paramJson = JSONObject.parseObject(jsonStr);
+        String code = paramJson.getString("code");
+        //登录凭证不能为空
+        if (code == null || code.length() == 0) {
+            return Result.error("code 不能为空");
+        }
+
+        String wxspAppid, wxspSecret;
+        //授权（必填）
+        String grantType = "authorization_code";
+        //小程序端设置的appid
+        String appid = paramJson.getString("appid");
+        if (StringUtils.isBlank(appid)) {
+            wxspAppid = "wx035e90552bbb21fb";
+        } else {
+            wxspAppid = appid;
+        }
+        wxspSecret = appAuth.get(wxspAppid).get("MP-SECRET");
+        try {
+            //////////////// 1、向微信服务器 使用登录凭证 code 获取 session_key 和 openid ////////////////
+            Map params = new HashMap();
+            params.put("appid", wxspAppid);
+            params.put("secret", wxspSecret);
+            params.put("js_code", code);
+            params.put("grant_type", grantType);
+            JSONObject json = CrawlerUtil.getForJSONObject("https://api.weixin.qq.com/sns/jscode2session", params, null, null, null);
+            if(json==null||json.get("session_key")==null){
+                return Result.error("session_key获取失败");
+            }
+            //获取会话密钥（session_key）
+            String session_key = json.get("session_key").toString();
+            map.put("sessionKey", session_key);
+            appAuth.get(wxspAppid).put("SESSION_KEY",session_key);
+            //用户的唯一标识（openid）
+            String openid = (String) json.get("openid");
+            //查询是否存在已绑定的账号
+            NshareUser user = nshareUserService.getOne(new LambdaQueryWrapper<NshareUser>().eq(NshareUser::getOpenid, openid).eq(NshareUser::getAppid, wxspAppid));
+
+            Map userMap=new HashMap(),tokenMap=null,trtcMap=null;
+            if (user != null) {
+                String token=JwtUtil.getTokenByUserId(user.getId(),redisUtil);
+                userMap.put("userInfo", user);
+
+                //判断是否登录状态
+                if(user.getBindStatus()!=null&&user.getBindStatus().shortValue()==1&&user.getPhone()!=null){
+                    tokenMap=new HashMap();
+                    userMap.put("userExpire",System.currentTimeMillis()+JwtUtil.EXPIRE_TIME/3);//登录有效时间
+                    userMap.put("login",true);
+
+                    tokenMap.put("tokenInfo", token);
+                    tokenMap.put("tokenExpire",System.currentTimeMillis()+JwtUtil.EXPIRE_TIME);//token有效时间
+
+                    HealthyUserSetting userSetting = usSer.getOne(new LambdaQueryWrapper<HealthyUserSetting>().eq(HealthyUserSetting::getUserId, user.getId()));
+                    userMap.put("userSettingInfo",userSetting);
+
+                    //TRTC UserSig
+                    long sdkAppId=Long.parseLong(appAuth.get(wxspAppid).get("TRTC-SDKAPPID"));
+                    String sdkSecret=appAuth.get(wxspAppid).get("TRTC-SECRET");
+                    TLSSigAPIv2 api = new TLSSigAPIv2(sdkAppId, sdkSecret);
+                    String userId=user.getPhone();
+                    String userSig = api.genUserSig(userId, 3 * 86400);
+                    trtcMap=new HashMap();
+                    trtcMap.put("sdkAppID", sdkAppId);
+                    trtcMap.put("userSig", userSig);
+                }
+            } else {
+                String encryptedData = paramJson.getString("encryptedData");
+                String iv = paramJson.getString("iv");
+                //////////////// 2、对encryptedData加密数据进行AES解密 ////////////////
+                String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
+                if (null != result && result.length() > 0) {
+                    JSONObject userInfoJSON = JSONObject.parseObject(result);
+                    user = new NshareUser();
+                    user.setOpenid(userInfoJSON.getString("openId"));
+                    user.setAvatarUrl(userInfoJSON.getString("avatarUrl"));
+                    user.setCity(userInfoJSON.getString("city"));
+                    user.setCountry(userInfoJSON.getString("country"));
+                    user.setGender(userInfoJSON.getIntValue("gender"));
+                    user.setUserName(userInfoJSON.getString("nickName"));
+                    user.setProvince(userInfoJSON.getString("province"));
+                    user.setUnionid(userInfoJSON.getString("unionId"));
+                    user.setAppid(wxspAppid);
+                    user.setIsUse(1);
+                    user.setBindStatus((short)0);
+                    nshareUserService.save(user);
+                    user = nshareUserService.getOne(new LambdaQueryWrapper<NshareUser>().eq(NshareUser::getOpenid, openid).eq(NshareUser::getAppid, wxspAppid));
+                    userMap.put("userInfo", user);
+                    userMap.put("login",false);
+                }else{
+                    userMap=null;
+                }
+            }
+
+            map.put("user", userMap);
+            map.put("token", tokenMap);
+            map.put("trtcConfig", trtcMap);
+            return Result.ok(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.error("用户信息获取出现异常");
     }
 
     @ApiOperation(value = "获取微信运动步数信息", notes = "解密微信运动步数")
@@ -240,6 +344,7 @@ public class NshareUserAPIController extends CommonController {
             }
             //获取会话密钥（session_key）
             String session_key = json.get("session_key").toString();
+            appAuth.get(wxspAppid).put("SESSION_KEY",session_key);
             //用户的唯一标识（openid）
             String openid = (String) json.get("openid");
 
@@ -266,43 +371,112 @@ public class NshareUserAPIController extends CommonController {
         return Result.error("解密失败");
     }
 
-    @ApiOperation(value = "更新用户信息", notes = "用户绑定手机号等信息")
+    @ApiOperation(value = "微信授权用户登录", notes = "用户绑定手机号等信息")
     @PostMapping(value = "/auth/user")
-    public Result<?> doPostBindUser(@RequestBody NshareUser user, HttpServletRequest req) {
-        String token = req.getHeader(X_ACCESS_TOKEN);
-        String userId = JwtUtil.getUsername(token);
-        if (user == null || StringUtils.isEmpty(user.getPhone())) {
+    public Result<?> doPostUser(@RequestBody String jsonStr, HttpServletRequest req) {
+        Map map = new HashMap();
+        JSONObject paramJson = JSONObject.parseObject(jsonStr);
+        JSONObject user=paramJson.getJSONObject("userInfo");
+        if (user == null) {
             return Result.error("缺少参数");
         }
-        NshareUser u = nshareUserService.getById(userId);
-        if (u == null) {
-            return Result.error("用户信息不存在");
+        String userId = user.getString("id");
+        //小程序端设置的appid
+        String appid = paramJson.getString("appid");
+        if (StringUtils.isBlank(appid)) {
+            appid = "wx035e90552bbb21fb";
         }
-        u.setPhone(user.getPhone());
-        u.setFkUserId(user.getFkUserId());
-        if (user.getAvatarUrl() != null) {
-            u.setAvatarUrl(user.getAvatarUrl());
-        }
-        if (user.getRealName() != null) {
-            u.setRealName(user.getRealName());
-        }
-        if (user.getUserCode() != null) {
-            u.setUserCode(user.getUserCode());
-        }
-        if (user.getProvince() != null) {
-            u.setProvince(user.getProvince());
-        }
-        if (user.getCity() != null) {
-            u.setCity(user.getCity());
-        }
-        if (user.getDistrict() != null) {
-            u.setDistrict(user.getDistrict());
-        }
-        u.setServNumber(user.getServNumber());
+        try {
+            NshareUser u = nshareUserService.getById(userId);
+            if (u == null) {
+                return Result.error("用户信息不存在");
+            }
 
-        nshareUserService.saveOrUpdate(u);
-//        u=nshareUserService.getById(userId);
-        return Result.ok("操作成功");
+            //解密获取手机号
+            String encryptedData = paramJson.getString("encryptedData");
+            String iv = paramJson.getString("iv");
+            if(!StringUtils.isBlank(encryptedData)){
+                String session_key = appAuth.get(appid).get("SESSION_KEY");
+                //////////////// 2、对encryptedData加密数据进行AES解密 ////////////////
+                String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
+                if (null != result && result.length() > 0) {
+                    JSONObject decryptData = JSONObject.parseObject(result);
+                    u.setPhone(decryptData.getString("phoneNumber"));
+                }
+            }
+
+            if (user.getString("idNumber") != null) {
+                u.setIdNumber(user.getString("idNumber"));
+            }
+            if (user.getString("height") != null) {
+                u.setHeight(user.getDouble("height"));
+            }
+            if (user.getString("weight") != null) {
+                u.setWeight(user.getDouble("weight"));
+            }
+            if (user.getInteger("gender") != null) {
+                u.setGender(user.getInteger("gender"));
+            }
+            if (user.getString("address") != null) {
+                u.setAddress(user.getString("address"));
+            }
+            if (user.getString("avatarUrl") != null) {
+                u.setAvatarUrl(user.getString("avatarUrl"));
+            }
+            if (user.getString("realName") != null) {
+                u.setRealName(user.getString("realName"));
+            }
+            if (user.getString("userName") != null) {
+                u.setUserName(user.getString("userName"));
+            }
+            if (user.getString("province") != null) {
+                u.setProvince(user.getString("province"));
+            }
+            if (user.getString("city") != null) {
+                u.setCity(user.getString("city"));
+            }
+            if (user.getString("district") != null) {
+                u.setDistrict(user.getString("district"));
+            }
+            if (user.getString("birthDate") != null) {
+                u.setBirthDate(user.getString("birthDate"));
+            }
+            if (user.getShort("bindStatus") != null) {
+                u.setBindStatus(user.getShort("bindStatus"));
+            }
+
+            nshareUserService.saveOrUpdate(u);
+            u=nshareUserService.getById(userId);
+
+            Map userMap=new HashMap();
+            map.put("userInfo",u);
+            map.put("login",true);
+            map.put("user",userMap);
+
+            //授权登录后返回token信息
+            Map tokenMap=new HashMap();
+            String token=JwtUtil.getTokenByUserId(u.getId(),redisUtil);
+            tokenMap.put("tokenInfo", token);
+            tokenMap.put("tokenExpire",System.currentTimeMillis()+JwtUtil.EXPIRE_TIME);//token有效时间
+            map.put("token",tokenMap);
+
+            //授权登录后返回TRTC UserSig
+            long sdkAppId=Long.parseLong(appAuth.get(appid).get("TRTC-SDKAPPID"));
+            String sdkSecret=appAuth.get(appid).get("TRTC-SECRET");
+            TLSSigAPIv2 api = new TLSSigAPIv2(sdkAppId, sdkSecret);
+            String phone=u.getPhone();
+            String userSig = api.genUserSig(phone, 3 * 86400);
+            Map trtcMap=new HashMap();
+            trtcMap=new HashMap();
+            trtcMap.put("sdkAppID", sdkAppId);
+            trtcMap.put("userSig", userSig);
+            map.put("trtcConfig",trtcMap);
+
+            return Result.ok(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.error("保存失败");
     }
 
     @ApiOperation(value = "更新用户社群站点信息", notes = "群主注册")
@@ -344,9 +518,10 @@ public class NshareUserAPIController extends CommonController {
 
     @ApiOperation(value = "获取用户信息", notes = "根据手机号获取用户信息")
     @GetMapping(value = "/user")
-    public Result<?> doGetUserByPhone(@RequestParam(name = "phone") String phone) {
+    public Result<?> doGetUserByPhone(@RequestParam(name = "phone") String phone,@RequestParam(name = "appid") String appid) {
         QueryWrapper<NshareUser> queryWrapper = new QueryWrapper<NshareUser>();
         queryWrapper.eq("phone", phone.trim());
+        queryWrapper.eq("appid", appid.trim());
         NshareUser user = nshareUserService.getOne(queryWrapper);
         return Result.ok(user);
     }
@@ -474,17 +649,19 @@ public class NshareUserAPIController extends CommonController {
     }
 
     @ApiOperation(value = "获取TRTC用户UserSig", notes = "腾讯实时语音视频UserSig获取")
-    @GetMapping(value = "/auth/userSig")
-    public Result<?> doGetUserSig(@RequestParam(name = "userId") String userId,
-                                  @RequestParam(name = "appid") String appid,
-                                  HttpServletRequest req) {
-        long sdkAppId=Long.parseLong(appAuth.get(appid).get("TRTC-SDKAPPID"));
-        String sdkSecret=appAuth.get(appid).get("TRTC-SECRET");
-        TLSSigAPIv2 api = new TLSSigAPIv2(sdkAppId, sdkSecret);
-        String userSig = api.genUserSig(userId, 3 * 86400);
-        Map map = new HashMap();
-        map.put("sdkAppID", sdkAppId);
-        map.put("userSig", userSig);
-        return Result.ok(map);
+    @GetMapping(value = "/stations")
+    public Result<?> doGetUserStations(HttpServletRequest req) {
+        String token = req.getHeader(X_ACCESS_TOKEN);
+        String userId = JwtUtil.getUsername(token);
+        List<Map> uss=suSer.getUserStations(userId);
+        if(!CollectionUtils.isEmpty(uss)){
+            for(Map m:uss){
+                String appid=m.get("appid").toString();
+                String trtcUserId=m.get("call_number")!=null?m.get("call_number").toString():m.get("phone").toString();
+                Map map = cuHandler.getTRTCConfig(trtcUserId,appid);
+                m.put("trtcConfig",map);
+            }
+        }
+        return Result.ok(uss);
     }
 }

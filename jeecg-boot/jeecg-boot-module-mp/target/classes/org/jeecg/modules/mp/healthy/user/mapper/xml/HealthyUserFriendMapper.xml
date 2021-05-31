@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mp.healthy.user.mapper.HealthyUserFriendMapper">
+    <select id="selectUserFriends" resultType="java.util.HashMap">
+        SELECT
+        a.*,DATE_FORMAT(confirm_time,'%Y-%m-%d') confirm_date,DATE_FORMAT(confirm_time,'%H:%i') confirm_minute,b.avatar_url,b.user_name,b.real_name
+        FROM
+        healthy_user_friend a
+        LEFT JOIN nshare_user b ON a.friend_id=b.id
+        WHERE
+        confirm_status = 1
+        <if test="userId!=null and userId!=''">
+            AND a.user_id=#{userId}
+        </if>
+        ORDER BY
+        confirm_time ASC
+    </select>
+    <select id="selectUserFriendReqs" resultType="java.util.HashMap">
+        SELECT
+        a.*,b.avatar_url,b.user_name,b.real_name
+        FROM
+        healthy_user_friend a
+        LEFT JOIN nshare_user b ON a.user_id=b.id
+        WHERE
+        1=1
+        <if test="userId!=null and userId!=''">
+            AND a.friend_id=#{userId}
+        </if>
+        ORDER BY
+        confirm_status ASC
+    </select>
+</mapper>

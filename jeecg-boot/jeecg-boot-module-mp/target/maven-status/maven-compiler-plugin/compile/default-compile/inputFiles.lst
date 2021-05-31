@@ -1,4 +1,5 @@
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbBookContent.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\entity\HealthyUserFriend.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\controller\TlUserAPIController.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\order\entity\NshareDistriOrderGoods.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\entity\TlKbJokeThumbs.java
@@ -16,6 +17,7 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\entity\TlSigninComment.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbCourseVersion.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\INshareDistriShopService.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\common\service\ICommonUtilHandler.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\comm\controller\OtherAPIController.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\INshareDistriShopStationService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\service\ITlKbJokeThumbsService.java
@@ -27,6 +29,8 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\stock\service\impl\StockInfoServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\poetry\service\ITlKbPoetryTagService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\mapper\TlKbBookContentMapper.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\impl\HealthyUserSettingServiceImpl.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\entity\HealthyRecord.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\vo\NshareDistriShopPromotionPage.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\user\service\INshareUserService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\mapper\TlKbCourseChapterMapper.java
@@ -51,6 +55,7 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\idiom\service\ITlKbIdiomService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\mapper\TlKbCourseQuestionBankMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\mapper\TlKbJokeMapper.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\common\service\impl\CommonUtilHandlerImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\entity\NshareDistriShopTeam.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\impl\TlKbCourseServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\util\WebTTSWS.java
@@ -64,10 +69,12 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\mapper\TlKbQaMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbCourseChapter.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbQaThumbs.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\station\entity\HealthyStationUser.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\mapper\TlSigninMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\service\ITlUserSubTagService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\ITlKbQaService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\sys\hotkey\service\impl\TlSysHotkeyServiceImpl.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\entity\HealthyUserSetting.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\author\service\ITlKbAuthorService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\mapper\NshareDistriShopAdminMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\lottery\controller\NshareLotteryController.java
@@ -90,6 +97,7 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\entity\TlUserSubPoetry.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\impl\NshareDistriShopServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\entity\TlUserSubQa.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\controller\HealthyUserAPIController.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\service\ITlSigninTermItemDanmuService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\vo\TlKbJokePage.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\stock\mapper\StockProfitMapper.java
@@ -97,6 +105,8 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\goods\controller\NshareDistriShopGoodsController.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\order\service\INshareDistriOrderService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\lottery\controller\NshareLotteryAPIController.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\station\mapper\HealthyStationUserMapper.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\impl\HealthyRecordServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\mapper\TlUserMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\stock\service\impl\StockProfitServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\author\entity\TlKbAuthor.java
@@ -113,11 +123,13 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\service\impl\TlUserSubTagServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbCourse.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\stock\entity\StockKline.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\common\constant\MpConfig.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\mapper\TlUserSubJokeMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\entity\TlKbJoke.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\entity\NshareDistriShopGoodsCat.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\ITlKbCourseQuestionBankService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\service\impl\TlSigninCommentServiceImpl.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\IHealthyUserFriendService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\idiom\entity\TlKbIdiom.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\entity\NshareDistriShop.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\poetry\mapper\TlKbPoetryMapper.java
@@ -168,6 +180,7 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\sys\hotkey\mapper\TlSysHotkeyMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\mapper\NshareDistriShopPromotionGoodsMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\joke\controller\TlKbJokeController.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\mapper\HealthyUserFriendMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\impl\NshareDistriShopAdminServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\entity\TlUserSubTag.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\impl\NshareDistriShopTeamServiceImpl.java
@@ -180,6 +193,7 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\INshareDistriShopPromotionService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\poetry\controller\TlKbPoetryController.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\INshareDistriShopGoodsCatService.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\station\service\IHealthyStationUserService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\mapper\NshareDistriShopTeamMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\user\service\impl\NshareUserServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\sys\hotkey\controller\TlSysHotkeyController.java
@@ -188,7 +202,9 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\service\impl\TlUserSubIdiomServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\impl\TlKbBookContentServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\impl\TlKbCourseKnowledgeServiceImpl.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\station\service\impl\HealthyStationUserServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\lottery\service\INshareLotteryService.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\IHealthyRecordService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\idiom\mapper\TlKbIdiomMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\service\impl\TlSigninTermServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\comm\service\impl\NshareCommAttachServiceImpl.java
@@ -218,8 +234,11 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\impl\TlKbQaServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\comm\service\IMpSysHotkeyService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\ITlKbBookContentService.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\mapper\HealthyRecordMapper.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\impl\HealthyUserFriendServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\signin\entity\TlSigninTerm.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\comm\entity\MpSysHotkey.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\service\IHealthyUserSettingService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\entity\TlKbQa.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\impl\NshareDistriShopPromotionServiceImpl.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\nshare\shop\service\impl\NshareDistriShopGoodsCatServiceImpl.java
@@ -251,4 +270,5 @@ G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\service\ITlUserSubPoetryService.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\user\entity\TlUser.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\kb\service\ITlKbCourseChapterService.java
+G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\healthy\user\mapper\HealthyUserSettingMapper.java
 G:\workspace\jeecg-boot\jeecg-boot\jeecg-boot-module-mp\src\main\java\org\jeecg\modules\mp\tlearn\sys\banner\mapper\TlBannerItemMapper.java

@@ -8,13 +8,13 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.http.HttpUtil;
 import org.jeecg.common.system.controller.CommonController;
 import org.jeecg.common.util.DateUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.jeecg.modules.mp.common.service.ICommonUtilHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 @Api(tags = "小程序-近邻分享-其他接口")
@@ -22,6 +22,8 @@ import java.util.UUID;
 @RequestMapping("/mp/api/ns/other")
 @Slf4j
 public class OtherAPIController extends CommonController {
+    @Autowired
+    private ICommonUtilHandler cuHandler;
     public static String baseUrl="http://www.dodojk.com/";
     @ApiOperation(value = "dodojk GET接口调用包装", notes = "包装GET方式调用dodojk外部接口")
     @PostMapping(value = "/api/get")
@@ -55,5 +57,14 @@ public class OtherAPIController extends CommonController {
             log.error(e.toString());
         }
         return Result.error("接口调用失败");
+    }
+
+    @ApiOperation(value = "获取TRTC用户UserSig", notes = "腾讯实时语音视频UserSig获取")
+    @GetMapping(value = "/trtc/config")
+    public Result<?> doGetUserSig(@RequestParam(name = "userId") String userId,
+                                  @RequestParam(name = "appid") String appid,
+                                  HttpServletRequest req) {
+        Map map = cuHandler.getTRTCConfig(userId,appid);
+        return Result.ok(map);
     }
 }

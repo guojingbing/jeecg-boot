@@ -25,7 +25,7 @@
       </a-form>
     </div>
     <!-- 操作按钮区域 -->
-    <div class="table-operator" :md="24" :sm="24" style="margin: -46px 0px 10px 2px">
+    <div class="table-operator" :md="24" :sm="24" style="margin: -88px 0px 10px 2px">
       <a-button @click="handleAdd" type="primary" icon="plus" style="margin-top: 16px">用户录入</a-button>
       <!--<a-button @click="handleEdit" type="primary" icon="edit" style="margin-top: 16px">用户编辑</a-button>-->
       <a-button @click="handleAddUserDepart" type="primary" icon="plus">添加已有用户</a-button>

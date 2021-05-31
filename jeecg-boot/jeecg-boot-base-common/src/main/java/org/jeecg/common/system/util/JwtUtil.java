@@ -6,18 +6,19 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.base.Joiner;
-
-import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.shiro.SecurityUtils;
+import org.jeecg.common.constant.CommonConstant;
 import org.jeecg.common.constant.DataBaseConstant;
 import org.jeecg.common.exception.JeecgBootException;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.system.vo.SysUserCacheInfo;
+import org.jeecg.common.util.RedisUtil;
 import org.jeecg.common.util.SpringContextUtils;
 import org.jeecg.common.util.oConvertUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * @Author Scott
@@ -26,8 +27,8 @@ import org.jeecg.common.util.oConvertUtils;
  **/
 public class JwtUtil {
 
-	// Token过期时间30分钟（用户登录过期时间是此时间的两倍，以token在reids缓存时间为准）
-	public static final long EXPIRE_TIME = 30 * 60 * 1000;
+	// Token过期时间单位毫秒（以token在reids缓存时间为准）
+	public static final long EXPIRE_TIME = 72 * 60 * 60 * 1000;
 
 	/**
 	 * 校验token是否正确
@@ -193,6 +194,15 @@ public class JwtUtil {
 		}
 		if(returnValue!=null){returnValue = returnValue + moshi;}
 		return returnValue;
+	}
+
+	public static String getTokenByUserId(String userId,RedisUtil redisUtil){
+		// 生成token
+		String token = JwtUtil.sign(userId, userId);
+		// 设置token缓存有效时间
+		redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
+		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
+		return token;
 	}
 	
 	public static void main(String[] args) {
